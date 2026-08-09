@@ -407,11 +407,15 @@
       const row = document.createElement("div");
       row.className = "row";
 
+      const edad = autor.muerte ? autor.muerte - autor.nacimiento : null;
+
       const bar = document.createElement("div");
       bar.className = "lifebar";
       bar.style.left = left + "px";
       bar.style.width = width + "px";
-      bar.title = `${autor.nombre} (${autor.nacimiento}–${autor.muerte ?? "presente"})`;
+      bar.title = edad !== null
+        ? `${autor.nombre} (${autor.nacimiento}–${autor.muerte}, murió a los ${edad} años)`
+        : `${autor.nombre} (${autor.nacimiento}–presente)`;
 
       const nameTag = document.createElement("div");
       nameTag.className = "name-tag";
@@ -421,7 +425,7 @@
       const metaTag = document.createElement("div");
       metaTag.className = "meta-tag";
       metaTag.style.left = left + "px";
-      metaTag.textContent = autor.nacionalidad;
+      metaTag.textContent = edad !== null ? `${autor.nacionalidad} · murió a los ${edad} años` : autor.nacionalidad;
 
       row.appendChild(bar);
       row.appendChild(nameTag);
