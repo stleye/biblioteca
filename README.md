@@ -27,3 +27,11 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *El horror de Dunwich* — H. P. Lovecraft
 - *La música de Erich Zann* — H. P. Lovecraft
 - *El festival* — H. P. Lovecraft
+- *El extraño caso del Dr. Jekyll y Mr. Hyde* — Robert Louis Stevenson
+- *Crónicas marcianas* — Ray Bradbury
+- *Yo, Robot* — Isaac Asimov
+- *La leyenda del jinete sin cabeza* — Washington Irving
+- *El tío Petros y la conjetura de Goldbach* — Apostolos Doxiadis
+- *El diablo en la botella* — Robert Louis Stevenson
+- *El tercer hombre* — Graham Greene
+- *El fantasma de Canterville* — Oscar Wilde
