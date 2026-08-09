@@ -22,3 +22,8 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *La muerte visita al dentista* — Agatha Christie
 - *Asesinato en el Orient Express* — Agatha Christie
 - *Muerte en el Nilo* — Agatha Christie
+- *El color que cayó del cielo* — H. P. Lovecraft
+- *La llamada de Cthulhu* — H. P. Lovecraft
+- *El horror de Dunwich* — H. P. Lovecraft
+- *La música de Erich Zann* — H. P. Lovecraft
+- *El festival* — H. P. Lovecraft
