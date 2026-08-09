@@ -35,3 +35,6 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *El diablo en la botella* — Robert Louis Stevenson
 - *El tercer hombre* — Graham Greene
 - *El fantasma de Canterville* — Oscar Wilde
+- *El signo de los cuatro* — Arthur Conan Doyle
+- *Los crímenes de la calle Morgue* — Edgar Allan Poe
+- *El gato negro* — Edgar Allan Poe
