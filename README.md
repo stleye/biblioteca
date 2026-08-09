@@ -1,8 +1,8 @@
-# Vocabulario
+# Biblioteca
 
-Repositorio personal para ir registrando palabras nuevas encontradas leyendo libros.
+Repositorio personal para ir registrando los libros que leo, las palabras nuevas que encuentro y el contexto de sus autores.
 
-Ver [vocabulario.html](vocabulario.html).
+Ver el [vocabulario](vocabulario.html).
 
 También hay un [registro de libros leídos](libros.html) y una [línea de tiempo de los autores](autores.html), para ubicar su época y contexto histórico.
 

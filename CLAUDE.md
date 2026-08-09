@@ -1,4 +1,4 @@
-# Vocabulario — contexto del proyecto
+# Biblioteca — contexto del proyecto
 
 Repositorio personal de Sebastian para registrar palabras nuevas encontradas leyendo libros, más dos páginas complementarias (libros leídos y línea de tiempo de autores). Repo público en GitHub (`stleye/biblioteca`), publicado con GitHub Pages en **https://stleye.github.io/biblioteca/**.
 
