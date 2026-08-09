@@ -56,12 +56,12 @@
   }
 
   .wrap {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
   }
 
   header {
-    margin-bottom: 2.75rem;
+    margin-bottom: 3rem;
   }
 
   .eyebrow {
@@ -90,24 +90,61 @@
     margin: 0;
   }
 
-  .list {
+  .shelf {
     display: flex;
     flex-direction: column;
+    gap: 3rem;
+  }
+
+  .author-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .author-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
     border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .author-name {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: -0.005em;
+  }
+
+  .author-count {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.03em;
+  }
+
+  .books {
+    display: flex;
+    flex-direction: column;
   }
 
   .book {
     display: flex;
     align-items: flex-start;
     gap: 1.2rem;
-    padding: 1.4rem 0;
+    padding: 1.2rem 0;
     border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .book:last-child {
+    border-bottom: none;
   }
 
   .cover {
     flex: none;
-    width: 56px;
-    height: 78px;
+    width: 52px;
+    height: 72px;
     border-radius: 2px;
     background: var(--paper-raised);
     border: 1px solid var(--rule);
@@ -139,18 +176,12 @@
   }
 
   .title {
-    font-size: 1.08rem;
+    font-size: 1.05rem;
     line-height: 1.3;
   }
 
-  .author {
-    font-size: 0.85rem;
-    color: var(--ink-soft);
-    font-style: italic;
-  }
-
   .synopsis {
-    font-size: 0.88rem;
+    font-size: 0.87rem;
     line-height: 1.55;
     color: var(--ink);
     max-width: 56ch;
@@ -172,7 +203,9 @@
   }
 
   footer {
-    margin-top: 2.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule-soft);
     font-size: 0.8rem;
     color: var(--ink-soft);
     line-height: 1.6;
@@ -184,11 +217,11 @@
     <p class="eyebrow">Vocabulario · Registro</p>
     <h1>Libros leídos</h1>
     <p class="sub">
-      Los libros de los que voy sacando palabras nuevas para el vocabulario.
+      Los libros de los que voy sacando palabras nuevas para el vocabulario, agrupados por autor.
     </p>
   </header>
 
-  <div class="list" id="list"></div>
+  <div class="shelf" id="shelf"></div>
 
   <footer>
     Para agregar un libro, sumá una entrada al arreglo <code>libros</code> en el código de esta página.
@@ -334,37 +367,65 @@
     }
   ];
 
-  const list = document.getElementById("list");
+  const shelf = document.getElementById("shelf");
 
+  const porAutor = new Map();
   libros.forEach((libro) => {
-    const row = document.createElement("div");
-    row.className = "book";
+    if (!porAutor.has(libro.autor)) porAutor.set(libro.autor, []);
+    porAutor.get(libro.autor).push(libro);
+  });
 
-    const cover = document.createElement("div");
-    cover.className = "cover";
-    if (libro.portada) {
-      const img = document.createElement("img");
-      img.src = libro.portada;
-      img.alt = `Portada de ${libro.titulo}`;
-      cover.appendChild(img);
-    } else {
-      const placeholder = document.createElement("span");
-      placeholder.className = "placeholder";
-      placeholder.textContent = "—";
-      cover.appendChild(placeholder);
-    }
+  const autoresOrdenados = [...porAutor.keys()].sort((a, b) => a.localeCompare(b, "es"));
 
-    const info = document.createElement("div");
-    info.className = "info";
-    info.innerHTML = `
-      <span class="title">${libro.titulo}</span>
-      <span class="author">${libro.autor}</span>
-      <p class="synopsis">${libro.sinopsis}</p>
-      <p class="characters"><span class="label">Personajes</span>${libro.personajes.join(", ")}</p>
+  autoresOrdenados.forEach((autor) => {
+    const obras = porAutor.get(autor);
+
+    const group = document.createElement("div");
+    group.className = "author-group";
+
+    const head = document.createElement("div");
+    head.className = "author-head";
+    head.innerHTML = `
+      <span class="author-name">${autor}</span>
+      <span class="author-count">${obras.length} ${obras.length === 1 ? "libro" : "libros"}</span>
     `;
+    group.appendChild(head);
 
-    row.appendChild(cover);
-    row.appendChild(info);
-    list.appendChild(row);
+    const books = document.createElement("div");
+    books.className = "books";
+
+    obras.forEach((libro) => {
+      const row = document.createElement("div");
+      row.className = "book";
+
+      const cover = document.createElement("div");
+      cover.className = "cover";
+      if (libro.portada) {
+        const img = document.createElement("img");
+        img.src = libro.portada;
+        img.alt = `Portada de ${libro.titulo}`;
+        cover.appendChild(img);
+      } else {
+        const placeholder = document.createElement("span");
+        placeholder.className = "placeholder";
+        placeholder.textContent = "—";
+        cover.appendChild(placeholder);
+      }
+
+      const info = document.createElement("div");
+      info.className = "info";
+      info.innerHTML = `
+        <span class="title">${libro.titulo}</span>
+        <p class="synopsis">${libro.sinopsis}</p>
+        <p class="characters"><span class="label">Personajes</span>${libro.personajes.join(", ")}</p>
+      `;
+
+      row.appendChild(cover);
+      row.appendChild(info);
+      books.appendChild(row);
+    });
+
+    group.appendChild(books);
+    shelf.appendChild(group);
   });
 </script>
