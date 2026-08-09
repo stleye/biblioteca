@@ -1,0 +1,223 @@
+<title>Biblioteca</title>
+<style>
+  :root {
+    --paper: #f2ede2;
+    --paper-raised: #e9e1d0;
+    --ink: #2b2419;
+    --ink-soft: #5b5240;
+    --rule: #c7bca4;
+    --rule-soft: #d9d0bc;
+    --accent: #8a2f2f;
+    --accent-soft: #c98f6a1a;
+    --accent2: #4f6b52;
+    --gold: #9c7522;
+    --shadow: 0 1px 0 rgba(43,36,25,0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1c1712;
+      --paper-raised: #251f18;
+      --ink: #e9e1d0;
+      --ink-soft: #b3a890;
+      --rule: #4a4030;
+      --rule-soft: #362f24;
+      --accent: #d1746f;
+      --accent-soft: #d1746f22;
+      --accent2: #8fae8b;
+      --gold: #cda54a;
+      --shadow: 0 1px 0 rgba(0,0,0,0.4);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #1c1712;
+    --paper-raised: #251f18;
+    --ink: #e9e1d0;
+    --ink-soft: #b3a890;
+    --rule: #4a4030;
+    --rule-soft: #362f24;
+    --accent: #d1746f;
+    --accent-soft: #d1746f22;
+    --accent2: #8fae8b;
+    --gold: #cda54a;
+    --shadow: 0 1px 0 rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    margin: 0;
+    padding: 3rem 1.5rem 5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2.75rem;
+  }
+
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.6rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.15;
+    margin: 0 0 0.75rem;
+    text-wrap: balance;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .sub {
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    line-height: 1.6;
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  nav.rooms {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--rule);
+  }
+
+  .room {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem 0.25rem;
+    border-bottom: 1px solid var(--rule-soft);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .room:hover .room-title {
+    color: var(--accent);
+  }
+
+  .room:hover .room-arrow {
+    transform: translateX(3px);
+  }
+
+  .room-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .room-title {
+    font-size: 1.25rem;
+    transition: color 0.15s ease;
+  }
+
+  .room-desc {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    max-width: 48ch;
+  }
+
+  .room-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: none;
+  }
+
+  .room-stat {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  .room-arrow {
+    color: var(--accent);
+    font-size: 1.1rem;
+    transition: transform 0.15s ease;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  footer a {
+    color: var(--ink-soft);
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Biblioteca personal</p>
+    <h1>Lo que voy <em>leyendo</em>, palabra por palabra</h1>
+    <p class="sub">
+      Un registro de los libros que leo, el vocabulario nuevo que voy encontrando en ellos,
+      y el contexto histórico de quienes los escribieron.
+    </p>
+  </header>
+
+  <nav class="rooms">
+    <a class="room" href="vocabulario.html">
+      <div class="room-text">
+        <span class="room-title">Vocabulario</span>
+        <span class="room-desc">Palabras nuevas encontradas leyendo, con definición y ejemplo de uso, agrupadas por libro.</span>
+      </div>
+      <div class="room-meta">
+        <span class="room-stat">184 palabras</span>
+        <span class="room-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="room" href="libros.html">
+      <div class="room-text">
+        <span class="room-title">Libros leídos</span>
+        <span class="room-desc">Título, sinopsis, personajes y portada de cada libro, agrupados por autor.</span>
+      </div>
+      <div class="room-meta">
+        <span class="room-stat">19 libros</span>
+        <span class="room-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="room" href="autores.html">
+      <div class="room-text">
+        <span class="room-title">Línea de tiempo</span>
+        <span class="room-desc">Cuándo vivió cada autor, para ubicar en qué época y contexto histórico escribió.</span>
+      </div>
+      <div class="room-meta">
+        <span class="room-stat">8 autores</span>
+        <span class="room-arrow">→</span>
+      </div>
+    </a>
+  </nav>
+
+  <footer>
+    Repositorio en <a href="https://github.com/stleye/biblioteca">github.com/stleye/biblioteca</a>.
+  </footer>
+</div>

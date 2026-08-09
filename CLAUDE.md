@@ -2,13 +2,16 @@
 
 Repositorio personal de Sebastian para registrar palabras nuevas encontradas leyendo libros, más dos páginas complementarias (libros leídos y línea de tiempo de autores). Repo público en GitHub (`stleye/biblioteca`), publicado con GitHub Pages en **https://stleye.github.io/biblioteca/**.
 
-Todo el sitio son 3 páginas HTML autocontenidas (sin build step, sin dependencias externas) que comparten la misma paleta y tipografía:
+Todo el sitio son 4 páginas HTML autocontenidas (sin build step, sin dependencias externas) que comparten la misma paleta y tipografía:
 
 | Página | Contenido | URL |
 |---|---|---|
+| `index.html` | Portada del sitio, con tarjetas de navegación a las otras 3 páginas | / |
 | `vocabulario.html` | Palabras nuevas, agrupadas por libro, con buscador | /vocabulario.html |
 | `libros.html` | Libros leídos, agrupados por autor, con sinopsis, personajes y portada | /libros.html |
 | `autores.html` | Línea de tiempo visual de cuándo vivió cada autor | /autores.html |
+
+`index.html` es la página que GitHub Pages sirve en la raíz (tiene prioridad sobre `README.md`). Si se agrega o saca un libro/autor/cantidad de palabras, actualizar a mano los `<span class="room-stat">` de `index.html` (no se calculan dinámicamente, están hardcodeados a propósito para que la portada cargue instantánea sin parsear los otros archivos).
 
 No hay `vocabulario.md` — se eliminó y se migró todo a HTML (agosto 2026).
 
