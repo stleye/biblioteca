@@ -4,7 +4,7 @@ Repositorio personal para ir registrando palabras nuevas encontradas leyendo lib
 
 Ver [vocabulario.md](vocabulario.md).
 
-También hay una [línea de tiempo de los autores](autores.html) leídos, para ubicar su época y contexto histórico.
+También hay un [registro de libros leídos](libros.html) y una [línea de tiempo de los autores](autores.html), para ubicar su época y contexto histórico.
 
 ## Lecturas
 
