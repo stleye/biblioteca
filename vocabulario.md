@@ -1055,3 +1055,9 @@ Palabras nuevas que voy encontrando leyendo libros, con su definición y ejemplo
 **Definición**: Dicho de un lugar: que resulta incómodo, poco acogedor o inadecuado para vivir en él.
 
 **Ejemplo**: "Tras la tormenta, el páramo se volvió un paraje inhóspito donde nadie se atrevía a pernoctar."
+
+## umbroso, -a
+
+**Definición**: Que tiene mucha sombra o la produce; sombrío por la espesura de la vegetación.
+
+**Ejemplo**: "Caminamos por un sendero umbroso donde apenas se colaba la luz entre las ramas."
