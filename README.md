@@ -2,7 +2,7 @@
 
 Repositorio personal para ir registrando palabras nuevas encontradas leyendo libros.
 
-Ver [vocabulario.md](vocabulario.md).
+Ver [vocabulario.html](vocabulario.html).
 
 También hay un [registro de libros leídos](libros.html) y una [línea de tiempo de los autores](autores.html), para ubicar su época y contexto histórico.
 
