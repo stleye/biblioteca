@@ -1065,3 +1065,59 @@ Palabras nuevas que voy encontrando leyendo libros, con su definición y ejemplo
 **Definición**: Que tiene mucha sombra o la produce; sombrío por la espesura de la vegetación.
 
 **Ejemplo**: "Caminamos por un sendero umbroso donde apenas se colaba la luz entre las ramas."
+
+## Veinte mil leguas de viaje submarino — Julio Verne
+
+### escollo
+
+**Definición**: Peñasco a flor de agua o poco visible que representa un peligro para la navegación; en sentido figurado, obstáculo o dificultad que impide avanzar.
+
+**Ejemplo**: "El barco encalló contra un escollo oculto bajo la superficie."
+
+### fusiforme
+
+**Definición**: Que tiene forma de huso: alargada y más ancha en el centro, afinándose hacia los extremos.
+
+**Ejemplo**: "El cuerpo fusiforme del tiburón le permitía deslizarse por el agua con gran velocidad."
+
+### huso
+
+**Definición**: Instrumento cilíndrico, más grueso en el medio y afinado en los extremos, usado para hilar torciendo la hebra; también da nombre a los husos horarios, por la forma en que se dividen los meridianos terrestres.
+
+**Ejemplo**: "La abuela hilaba la lana con un huso de madera."
+
+### ictiólogo, -a
+
+**Definición**: Especialista en ictiología, la rama de la zoología que estudia los peces.
+
+**Ejemplo**: "El ictiólogo catalogó varias especies desconocidas durante la expedición submarina."
+
+### elucubración
+
+**Definición**: Reflexión o razonamiento profundo y laborioso sobre un tema, a veces con matiz irónico por resultar rebuscado o poco fundado.
+
+**Ejemplo**: "Sus elucubraciones sobre el origen del monstruo marino no convencían a nadie."
+
+### quilla
+
+**Definición**: Pieza que va de proa a popa por la parte inferior de un barco, formando la base de su armazón y sosteniendo toda su estructura.
+
+**Ejemplo**: "El monstruo marino golpeó la quilla del navío con una fuerza descomunal."
+
+### sucinto, -a
+
+**Definición**: Breve, conciso, expresado en pocas palabras.
+
+**Ejemplo**: "Hizo un relato sucinto de lo ocurrido durante la travesía."
+
+### calado
+
+**Definición**: Profundidad que alcanza la parte sumergida de un barco, medida desde la línea de flotación hasta la quilla; determina la profundidad mínima de agua que necesita para navegar sin encallar.
+
+**Ejemplo**: "El submarino tenía un calado tan reducido que podía acercarse a la costa sin riesgo."
+
+### alabarda
+
+**Definición**: Arma antigua consistente en un asta larga rematada por una cuchilla puntiaguda con un hacha o punta transversal, usada tanto para golpear como para cortar.
+
+**Ejemplo**: "Los guardias custodiaban la entrada del palacio con alabardas en mano."
