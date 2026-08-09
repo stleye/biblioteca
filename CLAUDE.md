@@ -1,6 +1,6 @@
 # Vocabulario — contexto del proyecto
 
-Repositorio personal de Sebastian para registrar palabras nuevas encontradas leyendo libros, más dos páginas complementarias (libros leídos y línea de tiempo de autores). Repo público en GitHub (`stleye/vocabulario`), publicado con GitHub Pages en **https://stleye.github.io/vocabulario/**.
+Repositorio personal de Sebastian para registrar palabras nuevas encontradas leyendo libros, más dos páginas complementarias (libros leídos y línea de tiempo de autores). Repo público en GitHub (`stleye/biblioteca`), publicado con GitHub Pages en **https://stleye.github.io/biblioteca/**.
 
 Todo el sitio son 3 páginas HTML autocontenidas (sin build step, sin dependencias externas) que comparten la misma paleta y tipografía:
 
@@ -99,7 +99,7 @@ Editar `autores.html`, arreglo `const autores = [...]`:
 
 ## Flujo de trabajo / convenciones
 
-- El repo es **público** y usa **GitHub Pages** (rama `main`, carpeta `/`). Cualquier archivo `.html` en la raíz queda accesible en `https://stleye.github.io/vocabulario/<archivo>.html` unos minutos después del push.
+- El repo es **público** y usa **GitHub Pages** (rama `main`, carpeta `/`). Cualquier archivo `.html` en la raíz queda accesible en `https://stleye.github.io/biblioteca/<archivo>.html` unos minutos después del push.
 - Actualizar `README.md` cuando se agregan libros nuevos (lista en la sección "## Lecturas") o páginas nuevas (agregar el link).
 - Commitear y pushear solo cuando el usuario lo pida explícitamente ("commiteá y pusheá"), salvo que ya haya dado luz verde genérica en la conversación.
 - Mensajes de commit en español, describiendo qué se agregó (ej. "Agregar palabras de X al vocabulario", "Agregar autor Y a la línea de tiempo").
