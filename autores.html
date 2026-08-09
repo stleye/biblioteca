@@ -225,11 +225,6 @@
     white-space: nowrap;
   }
 
-  .meta-tag .work {
-    color: var(--accent2);
-    font-style: italic;
-  }
-
   section.legend {
     margin-top: 3.5rem;
     padding-top: 1.5rem;
@@ -300,49 +295,43 @@
 </div>
 
 <script>
-  // Cada autor nuevo se agrega acá: { nombre, nacimiento, muerte (o null si vive), nacionalidad, obra }
+  // Cada autor nuevo se agrega acá: { nombre, nacimiento, muerte (o null si vive), nacionalidad }
   const autores = [
     {
       nombre: "Edgar Allan Poe",
       nacimiento: 1809,
       muerte: 1849,
-      nacionalidad: "Estados Unidos",
-      obra: "La caída de la Casa Usher"
+      nacionalidad: "Estados Unidos"
     },
     {
       nombre: "Julio Verne",
       nacimiento: 1828,
       muerte: 1905,
-      nacionalidad: "Francia",
-      obra: "Veinte mil leguas de viaje submarino"
+      nacionalidad: "Francia"
     },
     {
       nombre: "Isaac Newton",
       nacimiento: 1643,
       muerte: 1727,
-      nacionalidad: "Inglaterra",
-      obra: "Philosophiæ Naturalis Principia Mathematica"
+      nacionalidad: "Inglaterra"
     },
     {
       nombre: "H. P. Lovecraft",
       nacimiento: 1890,
       muerte: 1937,
-      nacionalidad: "Estados Unidos",
-      obra: "El llamado de Cthulhu"
+      nacionalidad: "Estados Unidos"
     },
     {
       nombre: "Arthur Conan Doyle",
       nacimiento: 1859,
       muerte: 1930,
-      nacionalidad: "Escocia",
-      obra: "Sherlock Holmes"
+      nacionalidad: "Escocia"
     },
     {
       nombre: "Agatha Christie",
       nacimiento: 1890,
       muerte: 1976,
-      nacionalidad: "Inglaterra",
-      obra: "Hércules Poirot"
+      nacionalidad: "Inglaterra"
     }
   ];
 
@@ -420,7 +409,7 @@
       const metaTag = document.createElement("div");
       metaTag.className = "meta-tag";
       metaTag.style.left = left + "px";
-      metaTag.innerHTML = `${autor.nacionalidad} · <span class="work">${autor.obra}</span>`;
+      metaTag.textContent = autor.nacionalidad;
 
       row.appendChild(bar);
       row.appendChild(nameTag);
