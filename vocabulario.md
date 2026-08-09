@@ -953,3 +953,99 @@ Palabras nuevas que voy encontrando leyendo libros, con su definición y ejemplo
 **Definición**: Superficial, poco profundo; que trata algo de forma breve, sin entrar en detalles.
 
 **Ejemplo**: "Hizo un análisis somero del problema, sin detenerse en detalles."
+
+## calzada
+
+**Definición**: Parte de una vía pública destinada a la circulación de vehículos, en contraste con la vereda o acera.
+
+**Ejemplo**: "Cruzó la calzada corriendo justo antes de que cambiara el semáforo."
+
+## ébano
+
+**Definición**: Árbol tropical de madera muy dura y de color negro, muy apreciada en ebanistería; también, el nombre de esa madera o el color negro intenso asociado a ella.
+
+**Ejemplo**: "El piano tenía teclas talladas en ébano."
+
+## heráldico, -a
+
+**Definición**: Perteneciente o relativo a la heráldica, el arte de describir e interpretar escudos de armas y blasones.
+
+**Ejemplo**: "Los símbolos heráldicos de la familia aparecían tallados sobre el portón del castillo."
+
+## astucia
+
+**Definición**: Habilidad para engañar, actuar con maña o alcanzar un fin utilizando la inteligencia y el disimulo, más que la fuerza.
+
+**Ejemplo**: "Con astucia, logró convencer al guardia de que lo dejara pasar."
+
+## profuso, -a
+
+**Definición**: Abundante, copioso, que se da o se presenta en gran cantidad.
+
+**Ejemplo**: "La herida sangraba de forma profusa."
+
+## ralo, -a
+
+**Definición**: Que tiene sus partes o elementos poco tupidos y separados entre sí; escaso y disperso (dicho por ejemplo del pelo o la vegetación).
+
+**Ejemplo**: "Tenía una barba rala que apenas le cubría el rostro."
+
+## trémulo, -a
+
+**Definición**: Que tiembla o se estremece; tembloroso, vacilante.
+
+**Ejemplo**: "Con voz trémula, le confesó lo que sentía."
+
+## concisión
+
+**Definición**: Cualidad de expresarse con pocas palabras, de forma breve y precisa, sin rodeos.
+
+**Ejemplo**: "Su estilo se caracterizaba por la concisión, sin una palabra de más."
+
+## deplorable
+
+**Definición**: Que merece ser deplorado; lamentable, digno de lástima o reprobación.
+
+**Ejemplo**: "Aquella deplorable locura lo llevó a perderlo todo."
+
+## semblante
+
+**Definición**: Expresión del rostro que refleja el estado de ánimo de una persona.
+
+**Ejemplo**: "Su semblante serio delataba la preocupación que sentía."
+
+## cataléptico, -a
+
+**Definición**: Relativo a la catalepsia, un estado de suspensión de la sensibilidad y el movimiento, con rigidez muscular, que puede simular la muerte; también, persona que sufre ese estado.
+
+**Ejemplo**: "Cayó en un trance cataléptico y permaneció inmóvil durante horas."
+
+## sulfúreo, -a
+
+**Definición**: Que tiene azufre o sus características: color amarillento, olor penetrante; en sentido figurado, asociado a lo infernal o diabólico.
+
+**Ejemplo**: "Un resplandor sulfúreo iluminaba la caverna."
+
+## hipocondríaco, -a
+
+**Definición**: Que padece hipocondría, una preocupación excesiva y persistente por la propia salud, con temor infundado a padecer enfermedades.
+
+**Ejemplo**: "Era tan hipocondríaco que cualquier dolor lo convencía de estar gravemente enfermo."
+
+## impromptu
+
+**Definición**: Pieza musical breve de carácter improvisado; por extensión, algo hecho o dicho de forma espontánea, sin preparación previa.
+
+**Ejemplo**: "Tocó un impromptu de Schubert en el piano del salón."
+
+## quiromancia
+
+**Definición**: Práctica de adivinación que pretende predecir el carácter o el futuro de una persona a través de las líneas de la mano.
+
+**Ejemplo**: "La gitana leyó su destino en la palma mediante la quiromancia."
+
+## gozne
+
+**Definición**: Herraje formado por dos piezas articuladas que permite el giro de una puerta o ventana; bisagra.
+
+**Ejemplo**: "La puerta chirriaba porque los goznes estaban oxidados."
