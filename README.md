@@ -17,3 +17,8 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *Las aventuras de Sherlock Holmes* — Arthur Conan Doyle
 - *El señor de las moscas* — William Golding
 - *La máquina del tiempo* — H. G. Wells
+- *Diez negritos* — Agatha Christie
+- *La muerte de Roger Ackroyd* — Agatha Christie
+- *La muerte visita al dentista* — Agatha Christie
+- *Asesinato en el Orient Express* — Agatha Christie
+- *Muerte en el Nilo* — Agatha Christie
