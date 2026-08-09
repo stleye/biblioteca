@@ -98,16 +98,16 @@
 
   .book {
     display: flex;
-    align-items: center;
-    gap: 1.1rem;
-    padding: 1.1rem 0;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding: 1.4rem 0;
     border-bottom: 1px solid var(--rule-soft);
   }
 
   .cover {
     flex: none;
-    width: 44px;
-    height: 62px;
+    width: 56px;
+    height: 78px;
     border-radius: 2px;
     background: var(--paper-raised);
     border: 1px solid var(--rule);
@@ -134,7 +134,7 @@
   .info {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.4rem;
     min-width: 0;
   }
 
@@ -147,6 +147,28 @@
     font-size: 0.85rem;
     color: var(--ink-soft);
     font-style: italic;
+  }
+
+  .synopsis {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .characters {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .characters .label {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    margin-right: 0.4em;
   }
 
   footer {
@@ -175,16 +197,20 @@
 </div>
 
 <script>
-  // Cada libro nuevo se agrega acá: { titulo, autor, portada (URL, opcional) }
+  // Cada libro nuevo se agrega acá: { titulo, autor, sinopsis, personajes: [...], portada (URL, opcional) }
   const libros = [
     {
       titulo: "La caída de la Casa Usher",
       autor: "Edgar Allan Poe",
+      sinopsis: "Un hombre visita a su amigo de la infancia, Roderick Usher, en su decadente mansión familiar. Roderick vive atormentado por una enfermedad nerviosa y por el estado de su hermana gemela, Madeline, gravemente enferma. A medida que la casa se desmorona, también lo hace la cordura de sus habitantes, hasta un final catastrófico.",
+      personajes: ["El narrador (sin nombre)", "Roderick Usher", "Madeline Usher"],
       portada: ""
     },
     {
       titulo: "Veinte mil leguas de viaje submarino",
       autor: "Julio Verne",
+      sinopsis: "El profesor Pierre Aronnax se embarca en la caza de un supuesto monstruo marino y termina prisionero a bordo del Nautilus, el submarino del enigmático capitán Nemo. Junto a él recorre los océanos del mundo, descubriendo maravillas y peligros de las profundidades.",
+      personajes: ["Capitán Nemo", "Pierre Aronnax", "Conseil", "Ned Land"],
       portada: ""
     }
   ];
@@ -211,7 +237,12 @@
 
     const info = document.createElement("div");
     info.className = "info";
-    info.innerHTML = `<span class="title">${libro.titulo}</span><span class="author">${libro.autor}</span>`;
+    info.innerHTML = `
+      <span class="title">${libro.titulo}</span>
+      <span class="author">${libro.autor}</span>
+      <p class="synopsis">${libro.sinopsis}</p>
+      <p class="characters"><span class="label">Personajes</span>${libro.personajes.join(", ")}</p>
+    `;
 
     row.appendChild(cover);
     row.appendChild(info);
