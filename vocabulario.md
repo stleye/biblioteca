@@ -1049,3 +1049,9 @@ Palabras nuevas que voy encontrando leyendo libros, con su definición y ejemplo
 **Definición**: Herraje formado por dos piezas articuladas que permite el giro de una puerta o ventana; bisagra.
 
 **Ejemplo**: "La puerta chirriaba porque los goznes estaban oxidados."
+
+## inhóspito, -a
+
+**Definición**: Dicho de un lugar: que resulta incómodo, poco acogedor o inadecuado para vivir en él.
+
+**Ejemplo**: "Tras la tormenta, el páramo se volvió un paraje inhóspito donde nadie se atrevía a pernoctar."
