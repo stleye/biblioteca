@@ -29,3 +29,9 @@ Palabras nuevas que voy encontrando leyendo libros, con su definición y ejemplo
 **Definición**: De carácter serio, seco y poco expresivo; hosco o severo en el trato. (También puede significar "quemado" o "abrasado" por el sol, sentido menos usado hoy).
 
 **Ejemplo**: "El profesor, siempre adusto, apenas saludaba al entrar al aula."
+
+## agostado, -a
+
+**Definición**: Marchito o seco, especialmente por efecto del calor o la falta de agua (del verbo *agostar*); en sentido figurado, algo debilitado, consumido o falto de vitalidad.
+
+**Ejemplo**: "Los campos, agostados por el sol de verano, habían perdido todo su verde."
