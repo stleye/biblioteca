@@ -34,7 +34,7 @@ Editar `vocabulario.html`, buscar el arreglo `const libros = [...]` al final del
 
 - Si el libro ya existe: agregar un objeto al arreglo `palabras` de ese libro:
   ```js
-  { palabra: `nombre`, definicion: `...`, ejemplo: `"..."` }
+  { palabra: `nombre`, tipo: `sustantivo`, definicion: `...`, ejemplo: `"..."` }
   ```
 - Si el libro no existe todavía: agregar un nuevo objeto al arreglo `libros`:
   ```js
@@ -43,6 +43,44 @@ Editar `vocabulario.html`, buscar el arreglo `const libros = [...]` al final del
 - Usar comillas invertidas (template literals) para los strings, no comillas dobles, porque los ejemplos ya llevan comillas dobles adentro.
 - Para dar énfasis dentro de una definición se puede usar `*palabra*` (se convierte a `<em>` automáticamente vía `formatEmphasis`).
 - Si el usuario no tiene definición/ejemplo a mano, redactarlos yo mismo (definición tipo diccionario + un ejemplo de uso natural en español).
+- El campo `tipo` es **obligatorio**. Valores usados: `sustantivo`, `adjetivo`, `verbo`, `locución`, `preposición`. Se muestra como badge junto a la palabra y alimenta los chips de filtro del encabezado. Para palabras que son sustantivo y adjetivo a la vez (*diletante*, *iconoclasta*), poner el sentido con el que arranca la definición.
+- Las palabras van en orden de lectura dentro de cada libro, no alfabético. Agregar al final del arreglo del libro.
+
+### Imágenes en el vocabulario
+
+Campos opcionales. Una sola imagen:
+
+```js
+{ palabra: `x`, tipo: `sustantivo`, definicion: `...`, ejemplo: `"..."`,
+  imagen: `imagenes/x.jpeg`, epigrafe: `...` }
+```
+
+Varias (se muestran lado a lado y bajan a una columna en pantalla angosta):
+
+```js
+imagenes: [
+  { src: `imagenes/x-1.jpeg`, epigrafe: `...` },
+  { src: `imagenes/x-2.jpeg`, epigrafe: `...` },
+]
+```
+
+- Las imágenes van en `imagenes/`, siempre `.jpeg` y con nombre ASCII en minúsculas (sin tildes: `ebano.jpeg`, no `ébano.jpeg`).
+- El usuario las deja sueltas en `~/Desktop` con el nombre de la palabra. **Mirarlas antes de escribir el epígrafe** — a veces manda dos archivos idénticos, o el nombre no se corresponde con el contenido.
+- Optimizar antes de commitear: convertir a JPEG y bajar a 1000px de lado máximo con `sips -s format jpeg -s formatOptions 82 -Z 1000 origen --out imagenes/x.jpeg`. Si el original ya era un JPEG chico que no necesita reescalado, copiarlo tal cual — recomprimir solo degrada sin ahorrar.
+- Escribir el epígrafe describiendo **qué se ve** y cómo se conecta con la definición, no repitiendo la definición.
+- Avisar al usuario si la imagen trae marca de agua o crédito de terceros visible (el repo es público).
+
+### Verificar después de tocar `vocabulario.html`
+
+El arreglo es grande y los errores de sintaxis no siempre saltan a la vista. Después de editarlo con un script, comprobar:
+
+```bash
+rg -c '},,' vocabulario.html   # debe dar 0: una coma de más crea huecos en el arreglo
+```
+
+Los huecos son especialmente traicioneros: el `<script>` sigue parseando y la página se ve bien (`forEach` los saltea), pero `palabras.length` sí los cuenta y los contadores mienten. Para detectarlos, comparar las dos formas de contar — `libros.reduce((a,b) => a + b.palabras.length, 0)` contra `libros.flatMap(b => b.palabras).length`: si difieren, hay huecos.
+
+También conviene extraer el `<script>` a un archivo temporal y correrle `node --check`.
 
 ## Cómo agregar un libro nuevo
 
@@ -60,7 +98,9 @@ Editar `libros.html`, arreglo `const libros = [...]`:
 
 Los libros se agrupan y ordenan alfabéticamente por autor automáticamente en el render (`porAutor` + `sort`) — no hace falta ordenarlos a mano en el arreglo.
 
-**No pedir portada al usuario ni usar placeholders inventados.** Buscar la portada real con la API pública de Open Library:
+Si Open Library no tiene el libro (pasó con *El mundo en juego*, de Christopher Stork), pedirle la portada al usuario y guardarla en `portadas/` con el mismo criterio de optimización que las imágenes del vocabulario. En ese caso `portada` apunta a una ruta local en vez de a una URL.
+
+**No pedir portada al usuario ni usar placeholders inventados** mientras Open Library pueda tenerla. Buscar la portada real con la API pública:
 
 ```bash
 rtk proxy curl -s "https://openlibrary.org/search.json?q=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "Título Autor")&fields=title,author_name,cover_i&limit=3"

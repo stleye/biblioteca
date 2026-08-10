@@ -183,6 +183,57 @@
     color: var(--accent2);
   }
 
+  .word-tipo {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.12em 0.55em;
+    margin-left: 0.7em;
+    vertical-align: 0.15em;
+    white-space: nowrap;
+  }
+
+  .tipo-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.7rem;
+  }
+
+  .tipo-chip {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.32em 0.8em;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+
+  .tipo-chip:hover {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  .tipo-chip[aria-pressed="true"] {
+    color: var(--paper);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .tipo-chip .chip-count {
+    opacity: 0.65;
+    margin-left: 0.45em;
+  }
+
   .word-def {
     font-size: 0.9rem;
     line-height: 1.55;
@@ -201,6 +252,88 @@
     color: var(--ink-soft);
     font-style: italic;
     margin: 0;
+  }
+
+  .word-figs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .word-fig {
+    margin: 0;
+    flex: 1 1 300px;
+    max-width: 380px;
+  }
+
+  .word-fig img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    background: var(--paper-raised);
+    cursor: zoom-in;
+    transition: border-color 0.15s;
+  }
+
+  .word-fig img:hover {
+    border-color: var(--accent);
+  }
+
+  .word-fig figcaption {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    margin-top: 0.35rem;
+  }
+
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.82);
+    padding: 2rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    cursor: zoom-out;
+  }
+
+  .lightbox.open {
+    display: flex;
+  }
+
+  .lightbox img {
+    max-width: min(1000px, 100%);
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  .lightbox-caption {
+    color: #e8e4dc;
+    font-size: 0.85rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.4rem;
+    background: none;
+    border: none;
+    color: #e8e4dc;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.3rem;
   }
 
   .empty {
@@ -229,6 +362,7 @@
     <div class="search-bar">
       <input type="text" id="search" placeholder="Buscar una palabra..." autocomplete="off" />
     </div>
+    <div class="tipo-bar" id="tipoBar"></div>
     <p class="search-count" id="count"></p>
   </header>
 
@@ -237,211 +371,235 @@
   <footer>
     Para agregar una palabra, sumá una entrada al arreglo <code>libros</code> en el código de esta página
     (buscá el libro correspondiente o agregá uno nuevo con su propio arreglo <code>palabras</code>).
+    Cada palabra lleva un <code>tipo</code>: sustantivo, adjetivo, verbo, locución o preposición.
+    El campo <code>imagen</code> es opcional (ruta a un archivo en <code>imagenes/</code>) y se puede acompañar con <code>epigrafe</code>.
   </footer>
 </div>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+  <img id="lightboxImg" src="" alt="">
+  <p class="lightbox-caption" id="lightboxCaption"></p>
+</div>
+
 <script>
-  // Cada palabra nueva se agrega dentro del libro correspondiente: { palabra, definicion, ejemplo }
+  // Cada palabra nueva se agrega dentro del libro correspondiente: { palabra, tipo, definicion, ejemplo }
+  // tipo: sustantivo | adjetivo | verbo | locución | preposición
   const libros = [
     {
       titulo: `La caída de la Casa Usher`,
       autor: `Edgar Allan Poe`,
       palabras: [
-        { palabra: `lúgubre`, definicion: `Que expresa o inspira tristeza profunda, sombría; asociado a la muerte o al duelo.`, ejemplo: `"Un silencio lúgubre se apoderó de la casa apenas dieron la noticia."` },
-        { palabra: `melancólico, -a`, definicion: `Que siente o expresa una tristeza vaga, profunda y serena, muchas veces ligada a la nostalgia.`, ejemplo: `"Miraba el atardecer con una expresión melancólica, pensando en los años que ya no volverían."` },
-        { palabra: `adusto, -a`, definicion: `De carácter serio, seco y poco expresivo; hosco o severo en el trato. (También puede significar "quemado" o "abrasado" por el sol, sentido menos usado hoy).`, ejemplo: `"El profesor, siempre adusto, apenas saludaba al entrar al aula."` },
-        { palabra: `agostado, -a`, definicion: `Marchito o seco, especialmente por efecto del calor o la falta de agua (del verbo *agostar*); en sentido figurado, algo debilitado, consumido o falto de vitalidad.`, ejemplo: `"Los campos, agostados por el sol de verano, habían perdido todo su verde."` },
-        { palabra: `consonancia`, definicion: `Relación de conformidad, acuerdo o correspondencia entre dos o más cosas. (En música y poesía, coincidencia de sonidos, como la rima entre vocales y consonantes finales).`, ejemplo: `"Sus actos estaban en consonancia con lo que predicaba."` },
-        { palabra: `escarpado, -a`, definicion: `Que tiene mucha pendiente o desnivel pronunciado, difícil de subir o bajar; dicho de un terreno, monte o costa.`, ejemplo: `"El sendero se volvía escarpado a medida que se acercaban a la cumbre."` },
-        { palabra: `misiva`, definicion: `Carta o mensaje escrito que se envía a alguien, generalmente con un tono formal o solemne.`, ejemplo: `"Recibió una misiva anónima que le cambiaría la vida."` },
-        { palabra: `solemne`, definicion: `Que se celebra o se hace con formalidad y seriedad especial, a menudo ligado a un acto importante o ritual; también, algo grave o majestuoso en su forma.`, ejemplo: `"El silencio se volvió solemne cuando el juez entró a la sala."` },
-        { palabra: `venerable`, definicion: `Que merece respeto y admiración, generalmente por su edad, sabiduría o virtud.`, ejemplo: `"El anciano venerable del pueblo era consultado antes de cualquier decisión importante."` },
-        { palabra: `disgregación`, definicion: `Separación o descomposición de algo que estaba unido en partes o elementos que se dispersan.`, ejemplo: `"La disgregación del imperio se aceleró tras la muerte del emperador."` },
-        { palabra: `yermo, -a`, definicion: `Terreno despoblado, inculto o estéril; sin vegetación ni habitantes.`, ejemplo: `"Cruzaron kilómetros de tierra yerma sin encontrar una sola aldea."` },
-        { palabra: `páramo`, definicion: `Terreno alto, raso y desabrigado, expuesto al viento y de vegetación escasa; por extensión, lugar frío y desolado.`, ejemplo: `"El viento soplaba sin freno sobre el páramo helado."` },
-        { palabra: `sacristán`, definicion: `Persona encargada de cuidar la sacristía y ayudar en el servicio de una iglesia.`, ejemplo: `"El sacristán encendía las velas antes de cada misa."` },
-        { palabra: `impeler`, definicion: `Dar empuje a algo para que se mueva; también, incitar o estimular a alguien a hacer algo.`, ejemplo: `"Un impulso interior lo impelía a seguir buscando la verdad."` },
-        { palabra: `villorrio`, definicion: `Pueblo pequeño, considerado sin importancia o atractivo (uso despectivo).`, ejemplo: `"No era más que un villorrio olvidado en medio de la sierra."` },
-        { palabra: `dómine`, definicion: `Maestro de gramática latina o, por extensión, persona que adopta un tono pedante o sentencioso.`, ejemplo: `"Hablaba con aires de dómine, corrigiendo cada palabra ajena."` },
-        { palabra: `camposanto`, definicion: `Cementerio.`, ejemplo: `"Las tumbas del camposanto estaban cubiertas de hiedra."` },
-        { palabra: `rayano, -a`, definicion: `Que linda o está muy cerca de algo, casi al borde de ello (a menudo en sentido figurado).`, ejemplo: `"Su entusiasmo era rayano en la obsesión."` },
-        { palabra: `saya`, definicion: `Falda o vestidura femenina que cubre de la cintura para abajo.`, ejemplo: `"Las mujeres del pueblo vestían sayas de lana oscura."` },
-        { palabra: `estipendio`, definicion: `Paga o remuneración que se recibe por un trabajo o servicio.`, ejemplo: `"Cobraba un módico estipendio por sus lecciones de música."` },
-        { palabra: `tapia`, definicion: `Muro o pared, generalmente de tierra o adobe, que cierra un terreno.`, ejemplo: `"Saltó la tapia del huerto para escapar sin ser visto."` },
-        { palabra: `chapitel`, definicion: `Remate puntiagudo, generalmente en forma de pirámide o cono, que corona una torre.`, ejemplo: `"El chapitel de la catedral se veía desde varios kilómetros."` },
-        { palabra: `alborozo`, definicion: `Alegría o regocijo muy intenso y manifiesto.`, ejemplo: `"La noticia fue recibida con alborozo por todo el pueblo."` },
-        { palabra: `nigromancia`, definicion: `Práctica de adivinación mediante la supuesta invocación de los muertos; magia negra en general.`, ejemplo: `"Lo acusaban de practicar nigromancia en secreto."` },
-        { palabra: `sortilegio`, definicion: `Acto de adivinación o hechizo realizado mediante magia; conjuro.`, ejemplo: `"La bruja pronunció un sortilegio para proteger la casa."` },
-        { palabra: `marjal`, definicion: `Terreno bajo y pantanoso, cubierto de vegetación acuática.`, ejemplo: `"Las aves anidaban entre los juncos del marjal."` },
-        { palabra: `engarzar`, definicion: `Trabar o unir varias piezas entre sí, como cuentas o eslabones; engastar una piedra preciosa.`, ejemplo: `"El joyero engarzó el rubí en un anillo de oro."` },
-        { palabra: `matojo`, definicion: `Mata o arbusto pequeño, generalmente silvestre y de poco valor.`, ejemplo: `"El terreno estaba cubierto de matojos secos."` },
-        { palabra: `ciénaga`, definicion: `Terreno cenagoso, lleno de lodo y agua estancada.`, ejemplo: `"Se hundieron hasta las rodillas al cruzar la ciénaga."` },
-        { palabra: `voluta`, definicion: `Forma en espiral, como la de ciertos adornos arquitectónicos o el humo al elevarse.`, ejemplo: `"Volutas de humo subían perezosas desde su cigarrillo."` },
-        { palabra: `miasmático, -a`, definicion: `Relativo al miasma; que contiene o produce emanaciones nocivas.`, ejemplo: `"Un aire miasmático flotaba sobre el pantano."` },
-        { palabra: `miasma`, definicion: `Emanación o vapor maloliente y considerado nocivo, que antiguamente se creía causante de enfermedades.`, ejemplo: `"Los miasmas del basural se sentían desde lejos."` },
-        { palabra: `a la sazón`, definicion: `Locución que significa "en aquel momento" o "entonces".`, ejemplo: `"El rey, a la sazón muy joven, apenas gobernaba por sí mismo."` },
-        { palabra: `iridiscencia`, definicion: `Propiedad de reflejar la luz descomponiéndola en los colores del arcoíris, cambiando según el ángulo.`, ejemplo: `"La iridiscencia de la burbuja de jabón cambiaba con cada movimiento."` },
-        { palabra: `pétreo, -a`, definicion: `De piedra, o que tiene sus características: dureza, solidez, inmovilidad.`, ejemplo: `"Su rostro pétreo no dejaba entrever ninguna emoción."` },
-        { palabra: `aprensión`, definicion: `Temor o recelo infundado, muchas veces relacionado con la salud o el contacto con algo desagradable.`, ejemplo: `"Le daba aprensión tocar la piel de la serpiente."` },
-        { palabra: `entornar`, definicion: `Cerrar una puerta, ventana u ojos sin ajustarlos del todo.`, ejemplo: `"Entornó los ojos, vencida por el sueño."` },
-        { palabra: `retazo`, definicion: `Trozo o fragmento sobrante de una tela, o por extensión, de cualquier cosa; fragmento suelto.`, ejemplo: `"Cosió la manta con retazos de distintos colores."` },
-        { palabra: `de estampía`, definicion: `Locución que significa "de repente y a toda velocidad", de forma precipitada.`, ejemplo: `"Al oír el disparo, los caballos salieron de estampía."` },
-        { palabra: `olisquear`, definicion: `Oler algo con insistencia y de forma repetida, como hacen los animales.`, ejemplo: `"El perro olisqueaba cada rincón del jardín."` },
-        { palabra: `aspaviento`, definicion: `Demostración exagerada de un sentimiento, generalmente con gestos y ademanes excesivos.`, ejemplo: `"Hizo tantos aspavientos que todos se giraron a mirarla."` },
-        { palabra: `anatema`, definicion: `Maldición o condena solemne; también, persona o cosa execrada.`, ejemplo: `"Fue declarado anatema por la Iglesia tras publicar sus ideas."` },
-        { palabra: `cloqueo`, definicion: `Sonido que emite la gallina, especialmente cuando va a poner un huevo o cuida a sus pollos.`, ejemplo: `"Se oía el cloqueo nervioso de las gallinas en el corral."` },
-        { palabra: `canturrear`, definicion: `Cantar en voz baja y de manera despreocupada, casi sin darse cuenta.`, ejemplo: `"Canturreaba mientras lavaba los platos."` },
-        { palabra: `amedrentado, -a`, definicion: `Que siente miedo, atemorizado o intimidado.`, ejemplo: `"El niño, amedrentado por el ruido, se escondió bajo la cama."` },
-        { palabra: `abyecto, -a`, definicion: `Vil, despreciable, que provoca desprecio o repugnancia moral.`, ejemplo: `"Su traición fue vista como un acto abyecto por todos sus amigos."` },
-        { palabra: `funesto, -a`, definicion: `Que causa o anuncia desgracia; aciago.`, ejemplo: `"Aquella decisión tuvo consecuencias funestas para la familia."` },
-        { palabra: `teosofía`, definicion: `Doctrina que pretende alcanzar el conocimiento de lo divino mediante la intuición o la revelación mística, más allá de la razón.`, ejemplo: `"Se interesó por la teosofía tras leer sobre religiones orientales."` },
-        { palabra: `acaecer`, definicion: `Suceder, ocurrir un hecho (verbo usado sobre todo en tercera persona).`, ejemplo: `"El accidente acaeció durante la madrugada."` },
-        { palabra: `empellón`, definicion: `Empujón fuerte y brusco dado con el cuerpo.`, ejemplo: `"Le dio un empellón para abrirse paso entre la multitud."` },
-        { palabra: `impostura`, definicion: `Engaño en el que alguien finge ser quien no es, o simula cualidades o mérito que no tiene.`, ejemplo: `"Toda su reputación se basaba en una impostura."` },
-        { palabra: `críptico, -a`, definicion: `Oscuro, de difícil interpretación o comprensión; enigmático.`, ejemplo: `"Dejó una nota críptica que nadie supo descifrar."` },
-        { palabra: `esteta`, definicion: `Persona que cultiva la sensibilidad hacia la belleza y el arte, o que juzga las cosas principalmente por su valor estético.`, ejemplo: `"Era un esteta que no soportaba el desorden ni la fealdad."` },
-        { palabra: `caviloso, -a`, definicion: `Propenso a cavilar; que da vueltas obsesivas a sus pensamientos, preocupado o receloso.`, ejemplo: `"Se quedó caviloso, dándole vueltas a la misma duda toda la noche."` },
-        { palabra: `latente`, definicion: `Que existe pero no se manifiesta de forma visible o activa; oculto, en potencia.`, ejemplo: `"El conflicto entre ambos permanecía latente desde hacía años."` },
-        { palabra: `letargo`, definicion: `Estado de sueño profundo o inactividad prolongada; torpor.`, ejemplo: `"El oso pasa el invierno en letargo."` },
-        { palabra: `inveterado, -a`, definicion: `Muy antiguo, arraigado con el tiempo y difícil de erradicar (dicho de un hábito o costumbre).`, ejemplo: `"Su desconfianza hacia los extraños era un rasgo inveterado."` },
-        { palabra: `asir`, definicion: `Tomar o coger firmemente con la mano.`, ejemplo: `"Asió el bastón con fuerza antes de levantarse."` },
-        { palabra: `efigie`, definicion: `Representación o imagen de una persona, especialmente en escultura o pintura.`, ejemplo: `"Quemaron una efigie del tirano en la plaza pública."` },
-        { palabra: `pólipo`, definicion: `Animal acuático de cuerpo blando y tentáculos (como la anémona o el coral); también, tumor benigno que crece en una mucosa.`, ejemplo: `"Le detectaron un pólipo en el colon durante el chequeo."` },
-        { palabra: `tam-tam`, definicion: `Tambor africano, generalmente tocado con las manos, usado también para transmitir señales a distancia.`, ejemplo: `"El sonido del tam-tam anunciaba la llegada de visitantes."` },
-        { palabra: `insigne`, definicion: `Célebre, distinguido, que destaca notablemente por sus méritos.`, ejemplo: `"Fue homenajeado como el insigne escritor de su generación."` },
-        { palabra: `patibulario, -a`, definicion: `Que tiene aspecto propio de un criminal o de alguien destinado al patíbulo; siniestro, de mal aspecto.`, ejemplo: `"El hombre tenía una mirada patibularia que inquietaba a todos."` },
-        { palabra: `inmarcesible`, definicion: `Que no se marchita ni se agota; que perdura sin decaer (uso literario, a menudo referido a la gloria).`, ejemplo: `"Le auguraron una gloria inmarcesible en la historia de su país."` },
-        { palabra: `ínclito, -a`, definicion: `Ilustre, célebre, digno de admiración (uso literario y solemne).`, ejemplo: `"Se recordaba al ínclito general con estatuas por toda la ciudad."` },
-        { palabra: `misantropía`, definicion: `Aversión o desprecio hacia el trato con otras personas o hacia la humanidad en general.`, ejemplo: `"Su misantropía lo llevó a vivir aislado en las montañas."` },
-        { palabra: `pompa`, definicion: `Ostentación y solemnidad con que se celebra algo; también, burbuja (pompa de jabón).`, ejemplo: `"El funeral se celebró con gran pompa y ceremonia."` },
-        { palabra: `mujeril`, definicion: `Propio o característico de mujeres (a veces con matiz despectivo en textos antiguos).`, ejemplo: `"Vestía con adornos mujeriles que llamaban la atención."` },
-        { palabra: `desvalido, -a`, definicion: `Que carece de amparo, recursos o protección; desamparado.`, ejemplo: `"Recogió a los niños desvalidos que vagaban por las calles."` },
-        { palabra: `prosternarse`, definicion: `Arrodillarse o inclinarse hasta el suelo en señal de respeto, sumisión o adoración.`, ejemplo: `"Los fieles se prosternaron ante el altar."` },
-        { palabra: `encaramar`, definicion: `Subir o trepar a un lugar alto; alzar a alguien o algo a una posición elevada.`, ejemplo: `"El niño se encaramó al árbol en pocos segundos."` },
-        { palabra: `estilobato`, definicion: `Base o plataforma escalonada sobre la que se asientan las columnas de un templo clásico.`, ejemplo: `"Las columnas se alzaban sobre un estilobato de mármol."` },
-        { palabra: `vulgo`, definicion: `El común de la gente, en contraposición a quienes tienen conocimientos especializados o distinción social.`, ejemplo: `"Lo que el vulgo llama suerte, él lo llamaba trabajo."` },
-        { palabra: `minucia`, definicion: `Cosa de poca importancia; detalle pequeño.`, ejemplo: `"Se preocupaba hasta por la más mínima minucia del proyecto."` },
-        { palabra: `reverberar`, definicion: `Reflejarse la luz o el sonido de forma repetida y prolongada.`, ejemplo: `"El sol reverberaba con fuerza sobre la arena blanca."` },
-        { palabra: `depauperado, -a`, definicion: `Empobrecido o debilitado, tanto en sentido económico como físico.`, ejemplo: `"La región quedó depauperada tras años de sequía."` },
-        { palabra: `lóbrego, -a`, definicion: `Oscuro, tenebroso, triste y sombrío.`, ejemplo: `"Avanzaron por el pasillo lóbrego del sótano."` },
-        { palabra: `taciturno, -a`, definicion: `Callado, poco comunicativo, de carácter reservado y a menudo melancólico.`, ejemplo: `"Se volvió taciturno después de la pérdida de su hermano."` },
-        { palabra: `dar de bruces`, definicion: `Locución que significa caer o toparse de golpe con algo, boca abajo o de frente.`, ejemplo: `"Corría tan rápido que me di de bruces contra la puerta."` },
-        { palabra: `buhardilla`, definicion: `Habitación situada en la parte más alta de una casa, bajo el tejado.`, ejemplo: `"Guardaba sus libros viejos en la buhardilla."` },
-        { palabra: `gablete`, definicion: `Remate triangular u ornamental, en forma de aguja, típico de la arquitectura gótica.`, ejemplo: `"Los gabletes de la fachada estaban decorados con figuras talladas."` },
-        { palabra: `talante`, definicion: `Modo o disposición de ánimo con que alguien hace algo; carácter o humor de una persona.`, ejemplo: `"Lo recibió con buen talante a pesar de la mala noticia."` },
-        { palabra: `parangón`, definicion: `Comparación o semejanza establecida entre dos cosas o personas.`, ejemplo: `"No había parangón posible entre ambas obras."` },
-        { palabra: `huraño, -a`, definicion: `Que rehúye el trato con otras personas; esquivo, poco sociable.`, ejemplo: `"El gato del vecino era huraño y no dejaba que nadie lo tocara."` },
-        { palabra: `babel`, definicion: `Lugar o situación de gran confusión y desorden, especialmente por la mezcla de lenguas o voces.`, ejemplo: `"El mercado era una babel de idiomas y regateos."` },
-        { palabra: `pandemonio`, definicion: `Lugar de ruido y confusión extrema; caos generalizado.`, ejemplo: `"Cuando se cortó la luz, el estadio se convirtió en un pandemonio."` },
-        { palabra: `bastidor`, definicion: `Armazón que sirve de soporte a algo, como un lienzo o una decoración de escenario; en plural, "entre bastidores" alude a lo que ocurre fuera de la vista del público.`, ejemplo: `"Todo se decidió entre bastidores, antes de la reunión oficial."` },
-        { palabra: `respingar`, definicion: `Sacudirse bruscamente hacia atrás, como hace un animal asustado; también, resistirse a hacer algo de mala gana.`, ejemplo: `"El caballo respingó al oír el trueno."` },
-        { palabra: `grotesco, -a`, definicion: `Ridículo, extravagante, que provoca risa o rechazo por su fealdad o desproporción.`, ejemplo: `"La escena resultaba grotesca, casi una caricatura de sí misma."` },
-        { palabra: `exasperante`, definicion: `Que causa exasperación, irritación extrema o pérdida de paciencia.`, ejemplo: `"Su lentitud para responder era exasperante."` },
-        { palabra: `tribulación`, definicion: `Pena, angustia o aflicción, generalmente ocasionada por una desgracia o dificultad.`, ejemplo: `"Superó grandes tribulaciones antes de lograr su sueño."` },
-        { palabra: `atisbar`, definicion: `Vislumbrar algo de forma imprecisa o a distancia; observar con cautela y disimulo.`, ejemplo: `"Atisbó una figura entre los árboles al anochecer."` },
-        { palabra: `pulular`, definicion: `Abundar y moverse en gran número en un mismo lugar (personas, animales o cosas).`, ejemplo: `"Los turistas pululaban por las calles del centro."` },
-        { palabra: `caldear`, definicion: `Calentar un ambiente; en sentido figurado, exaltar los ánimos o tensar una situación.`, ejemplo: `"El discurso caldeó los ánimos de la multitud."` },
-        { palabra: `exhortar`, definicion: `Incitar a alguien, con palabras o razones, a hacer o dejar de hacer algo.`, ejemplo: `"El entrenador exhortó al equipo a no rendirse."` },
-        { palabra: `evo`, definicion: `Duración sin principio ni fin, o periodo de tiempo muy extenso; eternidad (uso poético o filosófico).`, ejemplo: `"Hablaba del alma como algo destinado a durar por todo el evo."` },
-        { palabra: `pagoda`, definicion: `Templo religioso de varios pisos, típico del este y sudeste asiático.`, ejemplo: `"Subieron los cientos de escalones hasta la pagoda dorada."` },
-        { palabra: `plenilunio`, definicion: `Luna llena.`, ejemplo: `"La ceremonia se celebraba siempre bajo el plenilunio."` },
-        { palabra: `allende`, definicion: `Preposición que significa "del otro lado de" o "más allá de".`, ejemplo: `"Llegaban noticias de allende el mar."` },
-        { palabra: `frenesí`, definicion: `Estado de agitación o exaltación violenta, ya sea de ánimo, pasión o actividad.`, ejemplo: `"El público bailaba con frenesí al ritmo de la música."` },
-        { palabra: `enfático, -a`, definicion: `Que se expresa con énfasis, dando fuerza o relieve especial a lo que se dice.`, ejemplo: `"Negó de forma enfática haber estado allí."` },
-        { palabra: `ignoto, -a`, definicion: `Desconocido, no explorado ni descubierto.`, ejemplo: `"Se aventuraron hacia tierras ignotas del continente."` },
-        { palabra: `vetusto, -a`, definicion: `Muy antiguo, deteriorado por el paso del tiempo.`, ejemplo: `"Vivían en una casona vetusta al borde del pueblo."` },
-        { palabra: `oblongo, -a`, definicion: `Que es más largo que ancho, de forma alargada.`, ejemplo: `"La mesa oblonga ocupaba todo el salón."` },
-        { palabra: `subyacente`, definicion: `Que está debajo de algo, generalmente en sentido figurado: una idea o causa oculta bajo la superficie.`, ejemplo: `"Detrás de la discusión había un conflicto subyacente más profundo."` },
-        { palabra: `subyacer`, definicion: `Estar una cosa debajo de otra, o existir de forma oculta como base o causa de algo.`, ejemplo: `"Bajo esa calma subyacía una rabia contenida."` },
-        { palabra: `insondable`, definicion: `Que no se puede sondear o llegar al fondo; muy difícil de comprender o medir.`, ejemplo: `"Sus motivos eran insondables incluso para sus amigos más cercanos."` },
-        { palabra: `fortuito, -a`, definicion: `Que ocurre por casualidad, sin haber sido planeado ni previsto.`, ejemplo: `"Se conocieron de forma fortuita en la sala de espera."` },
-        { palabra: `departir`, definicion: `Conversar, hablar con alguien de manera distendida.`, ejemplo: `"Se quedaron departiendo un buen rato después de la cena."` },
-        { palabra: `jarana`, definicion: `Diversión bulliciosa y ruidosa; también, alboroto o riña.`, ejemplo: `"Se armó una jarana en la fiesta que duró hasta el amanecer."` },
-        { palabra: `bálsamo`, definicion: `Sustancia aromática con propiedades curativas; en sentido figurado, algo que alivia una pena o dolor.`, ejemplo: `"Sus palabras fueron un bálsamo para su tristeza."` },
-        { palabra: `de soslayo`, definicion: `Locución que significa "de lado, oblicuamente"; mirar de reojo, sin volverse del todo.`, ejemplo: `"Lo miró de soslayo sin querer que se diera cuenta."` },
-        { palabra: `compunción`, definicion: `Sentimiento de pena o arrepentimiento por una falta cometida.`, ejemplo: `"Habló con compunción sobre el daño que había causado."` },
-        { palabra: `septentrional`, definicion: `Perteneciente o relativo al norte.`, ejemplo: `"Las regiones septentrionales del país eran mucho más frías."` },
-        { palabra: `solazar`, definicion: `Dar solaz, descanso o placer; recrear el ánimo.`, ejemplo: `"Se solazaba escuchando música al final del día."` },
-        { palabra: `solaz`, definicion: `Descanso, alivio o placer que reconforta el ánimo.`, ejemplo: `"Encontraba solaz en la lectura después de un día difícil."` },
-        { palabra: `sosiego`, definicion: `Calma, tranquilidad, quietud de ánimo.`, ejemplo: `"El campo le devolvía el sosiego que la ciudad le quitaba."` },
-        { palabra: `andrajo`, definicion: `Trozo de tela vieja y rota; prenda de vestir muy deteriorada.`, ejemplo: `"El mendigo iba vestido con andrajos."` },
-        { palabra: `suscitar`, definicion: `Provocar, ocasionar o dar lugar a algo, especialmente una discusión, duda o sentimiento.`, ejemplo: `"El anuncio suscitó numerosas críticas."` },
-        { palabra: `desapacible`, definicion: `Desagradable, áspero, que no resulta agradable a los sentidos o al ánimo (a menudo referido al clima).`, ejemplo: `"Hacía un tiempo desapacible, con viento frío y llovizna."` },
-        { palabra: `alarido`, definicion: `Grito agudo y fuerte, generalmente de dolor, terror o furia.`, ejemplo: `"Un alarido rompió el silencio de la noche."` },
-        { palabra: `chisporrotear`, definicion: `Despedir chispas de forma repetida, como hace el fuego o el aceite caliente.`, ejemplo: `"La leña chisporroteaba en la chimenea."` },
-        { palabra: `omnímodo, -a`, definicion: `Que lo abarca o comprende todo, sin límite ni excepción.`, ejemplo: `"Ejercía un poder omnímodo sobre sus súbditos."` },
-        { palabra: `atávico, -a`, definicion: `Relativo al atavismo; heredado de los antepasados, muy antiguo y arraigado en el instinto.`, ejemplo: `"Sintió un miedo atávico ante la oscuridad del bosque."` },
-        { palabra: `derrotero`, definicion: `Rumbo o dirección que se sigue para alcanzar un fin; camino trazado, literal o figurado.`, ejemplo: `"Su vida tomó un derrotero muy distinto al que esperaban sus padres."` },
-        { palabra: `entrever`, definicion: `Ver algo de forma confusa o parcial; sospechar o adivinar algo sin conocerlo con certeza.`, ejemplo: `"Entre la niebla, entrevió la silueta de la casa."` },
-        { palabra: `vehemente`, definicion: `Que actúa o se expresa con fuerza, pasión e intensidad.`, ejemplo: `"Defendió su postura con un discurso vehemente."` },
-        { palabra: `diletante`, definicion: `Persona que cultiva un arte o ciencia por afición, sin profundizar en ella con rigor profesional.`, ejemplo: `"Se consideraba un diletante de la pintura, nunca un profesional."` },
-        { palabra: `arrellanarse`, definicion: `Sentarse cómodamente, extendiéndose con desenfado en un asiento.`, ejemplo: `"Se arrellanó en el sillón con un libro en la mano."` },
-        { palabra: `meridional`, definicion: `Perteneciente o relativo al sur.`, ejemplo: `"El acento meridional se notaba en cuanto abría la boca."` },
-        { palabra: `intempestivo, -a`, definicion: `Que ocurre fuera de tiempo o de forma inoportuna.`, ejemplo: `"Nos hizo una visita intempestiva a medianoche."` },
-        { palabra: `cetrino, -a`, definicion: `De color amarillento verdoso, aplicado sobre todo al color de la piel o el semblante.`, ejemplo: `"Tenía el rostro cetrino de quien lleva días sin dormir."` },
-        { palabra: `inexorable`, definicion: `Que no se puede evitar, detener ni conmover con ruegos; implacable.`, ejemplo: `"El paso del tiempo es inexorable."` },
-        { palabra: `apear`, definicion: `Bajar a alguien o bajarse uno mismo de un vehículo o montura.`, ejemplo: `"Se apeó del caballo frente a la posada."` },
-        { palabra: `celeridad`, definicion: `Rapidez o prontitud en hacer algo.`, ejemplo: `"Resolvieron el trámite con una celeridad inusual."` },
-        { palabra: `anodino, -a`, definicion: `Insignificante, insustancial, que no produce ningún efecto ni interés notable.`, ejemplo: `"Fue una conversación anodina, sin nada memorable."` },
-        { palabra: `procurador, -a`, definicion: `Persona que representa legalmente a otra ante un tribunal; históricamente, quien administraba los bienes o intereses de alguien.`, ejemplo: `"El procurador presentó los documentos ante el juzgado."` },
-        { palabra: `paroxismo`, definicion: `Momento de mayor intensidad de un sentimiento, estado o proceso; exaltación extrema.`, ejemplo: `"Su furia llegó al paroxismo cuando descubrió la verdad."` },
-        { palabra: `iconoclasta`, definicion: `Que rechaza o ataca las creencias, tradiciones o figuras de autoridad establecidas.`, ejemplo: `"Sus ideas iconoclastas chocaban con la tradición académica."` },
-        { palabra: `admonición`, definicion: `Advertencia o reprensión, generalmente con tono severo.`, ejemplo: `"El profesor le dirigió una admonición por llegar tarde otra vez."` },
-        { palabra: `mentado, -a`, definicion: `Nombrado o mencionado anteriormente; también, famoso o de renombre.`, ejemplo: `"El mentado documento nunca llegó a aparecer."` },
-        { palabra: `engañifa`, definicion: `Engaño de poca importancia, hecho con astucia para sacar provecho.`, ejemplo: `"Todo el negocio resultó ser una engañifa."` },
-        { palabra: `párvulo, -a`, definicion: `Niño de corta edad, especialmente el que está en la etapa preescolar.`, ejemplo: `"Los párvulos jugaban en el patio bajo la mirada de la maestra."` },
-        { palabra: `oligofrenia`, definicion: `Término médico antiguo para referirse a una discapacidad intelectual (en desuso y considerado hoy inadecuado u ofensivo).`, ejemplo: `"El término 'oligofrenia' aparece en textos antiguos, pero hoy se considera obsoleto y estigmatizante."` },
-        { palabra: `discurrir`, definicion: `Reflexionar, pensar con detenimiento sobre algo; también, transcurrir el tiempo o fluir algo (como un río).`, ejemplo: `"Discurrió largo rato sobre la mejor manera de decírselo."` },
-        { palabra: `oquedad`, definicion: `Espacio hueco o vacío en un cuerpo sólido; en sentido figurado, vacío interior o falta de contenido.`, ejemplo: `"Detrás de sus discursos grandilocuentes solo había oquedad."` },
-        { palabra: `desdén`, definicion: `Indiferencia o desprecio con que se trata a alguien o algo.`, ejemplo: `"Respondió con desdén a sus disculpas."` },
-        { palabra: `lacerado, -a`, definicion: `Herido o dañado, física o moralmente.`, ejemplo: `"Tenía el orgullo lacerado tras la humillación pública."` },
-        { palabra: `hosco, -a`, definicion: `De trato áspero y poco amable; huraño y de mal humor.`, ejemplo: `"El portero era hosco y nunca respondía los saludos."` },
-        { palabra: `languidez`, definicion: `Estado de debilidad, decaimiento físico o falta de ánimo y vigor.`, ejemplo: `"Una languidez extraña se apoderó de él tras la enfermedad."` },
-        { palabra: `lánguido, -a`, definicion: `Débil, decaído, falto de energía o vigor.`, ejemplo: `"Se movía con gestos lánguidos, como si le costara cada esfuerzo."` },
-        { palabra: `pecio`, definicion: `Resto o fragmento de una nave que ha naufragado.`, ejemplo: `"Los buzos exploraron el pecio hundido hace siglos."` },
-        { palabra: `barahúnda`, definicion: `Ruido y confusión grandes, alboroto desordenado.`, ejemplo: `"Se armó una barahúnda cuando se cortó la electricidad en pleno concierto."` },
-        { palabra: `postrimerías`, definicion: `Últimos periodos o momentos de algo, especialmente de la vida.`, ejemplo: `"En las postrimerías del imperio, todo comenzó a desmoronarse."` },
-        { palabra: `exacción`, definicion: `Cobro injusto o violento de un impuesto, multa o tributo.`, ejemplo: `"El pueblo se rebeló contra las exacciones del gobernador."` },
-        { palabra: `acaudillar`, definicion: `Guiar o dirigir a un grupo de personas, especialmente en una lucha o rebelión, como jefe o caudillo.`, ejemplo: `"Acaudilló la resistencia contra el invasor durante años."` },
-        { palabra: `somero, -a`, definicion: `Superficial, poco profundo; que trata algo de forma breve, sin entrar en detalles.`, ejemplo: `"Hizo un análisis somero del problema, sin detenerse en detalles."` },
-        { palabra: `calzada`, definicion: `Parte de una vía pública destinada a la circulación de vehículos, en contraste con la vereda o acera.`, ejemplo: `"Cruzó la calzada corriendo justo antes de que cambiara el semáforo."` },
-        { palabra: `ébano`, definicion: `Árbol tropical de madera muy dura y de color negro, muy apreciada en ebanistería; también, el nombre de esa madera o el color negro intenso asociado a ella.`, ejemplo: `"El piano tenía teclas talladas en ébano."` },
-        { palabra: `heráldico, -a`, definicion: `Perteneciente o relativo a la heráldica, el arte de describir e interpretar escudos de armas y blasones.`, ejemplo: `"Los símbolos heráldicos de la familia aparecían tallados sobre el portón del castillo."` },
-        { palabra: `astucia`, definicion: `Habilidad para engañar, actuar con maña o alcanzar un fin utilizando la inteligencia y el disimulo, más que la fuerza.`, ejemplo: `"Con astucia, logró convencer al guardia de que lo dejara pasar."` },
-        { palabra: `profuso, -a`, definicion: `Abundante, copioso, que se da o se presenta en gran cantidad.`, ejemplo: `"La herida sangraba de forma profusa."` },
-        { palabra: `ralo, -a`, definicion: `Que tiene sus partes o elementos poco tupidos y separados entre sí; escaso y disperso (dicho por ejemplo del pelo o la vegetación).`, ejemplo: `"Tenía una barba rala que apenas le cubría el rostro."` },
-        { palabra: `trémulo, -a`, definicion: `Que tiembla o se estremece; tembloroso, vacilante.`, ejemplo: `"Con voz trémula, le confesó lo que sentía."` },
-        { palabra: `concisión`, definicion: `Cualidad de expresarse con pocas palabras, de forma breve y precisa, sin rodeos.`, ejemplo: `"Su estilo se caracterizaba por la concisión, sin una palabra de más."` },
-        { palabra: `deplorable`, definicion: `Que merece ser deplorado; lamentable, digno de lástima o reprobación.`, ejemplo: `"Aquella deplorable locura lo llevó a perderlo todo."` },
-        { palabra: `semblante`, definicion: `Expresión del rostro que refleja el estado de ánimo de una persona.`, ejemplo: `"Su semblante serio delataba la preocupación que sentía."` },
-        { palabra: `cataléptico, -a`, definicion: `Relativo a la catalepsia, un estado de suspensión de la sensibilidad y el movimiento, con rigidez muscular, que puede simular la muerte; también, persona que sufre ese estado.`, ejemplo: `"Cayó en un trance cataléptico y permaneció inmóvil durante horas."` },
-        { palabra: `sulfúreo, -a`, definicion: `Que tiene azufre o sus características: color amarillento, olor penetrante; en sentido figurado, asociado a lo infernal o diabólico.`, ejemplo: `"Un resplandor sulfúreo iluminaba la caverna."` },
-        { palabra: `hipocondríaco, -a`, definicion: `Que padece hipocondría, una preocupación excesiva y persistente por la propia salud, con temor infundado a padecer enfermedades.`, ejemplo: `"Era tan hipocondríaco que cualquier dolor lo convencía de estar gravemente enfermo."` },
-        { palabra: `impromptu`, definicion: `Pieza musical breve de carácter improvisado; por extensión, algo hecho o dicho de forma espontánea, sin preparación previa.`, ejemplo: `"Tocó un impromptu de Schubert en el piano del salón."` },
-        { palabra: `quiromancia`, definicion: `Práctica de adivinación que pretende predecir el carácter o el futuro de una persona a través de las líneas de la mano.`, ejemplo: `"La gitana leyó su destino en la palma mediante la quiromancia."` },
-        { palabra: `gozne`, definicion: `Herraje formado por dos piezas articuladas que permite el giro de una puerta o ventana; bisagra.`, ejemplo: `"La puerta chirriaba porque los goznes estaban oxidados."` },
-        { palabra: `inhóspito, -a`, definicion: `Dicho de un lugar: que resulta incómodo, poco acogedor o inadecuado para vivir en él.`, ejemplo: `"Tras la tormenta, el páramo se volvió un paraje inhóspito donde nadie se atrevía a pernoctar."` },
-        { palabra: `umbroso, -a`, definicion: `Que tiene mucha sombra o la produce; sombrío por la espesura de la vegetación.`, ejemplo: `"Caminamos por un sendero umbroso donde apenas se colaba la luz entre las ramas."` },
+        { palabra: `lúgubre`, tipo: `adjetivo`, definicion: `Que expresa o inspira tristeza profunda, sombría; asociado a la muerte o al duelo.`, ejemplo: `"Un silencio lúgubre se apoderó de la casa apenas dieron la noticia."` },
+        { palabra: `melancólico, -a`, tipo: `adjetivo`, definicion: `Que siente o expresa una tristeza vaga, profunda y serena, muchas veces ligada a la nostalgia.`, ejemplo: `"Miraba el atardecer con una expresión melancólica, pensando en los años que ya no volverían."` },
+        { palabra: `adusto, -a`, tipo: `adjetivo`, definicion: `De carácter serio, seco y poco expresivo; hosco o severo en el trato. (También puede significar "quemado" o "abrasado" por el sol, sentido menos usado hoy).`, ejemplo: `"El profesor, siempre adusto, apenas saludaba al entrar al aula."` },
+        { palabra: `agostado, -a`, tipo: `adjetivo`, definicion: `Marchito o seco, especialmente por efecto del calor o la falta de agua (del verbo *agostar*); en sentido figurado, algo debilitado, consumido o falto de vitalidad.`, ejemplo: `"Los campos, agostados por el sol de verano, habían perdido todo su verde."` },
+        { palabra: `consonancia`, tipo: `sustantivo`, definicion: `Relación de conformidad, acuerdo o correspondencia entre dos o más cosas. (En música y poesía, coincidencia de sonidos, como la rima entre vocales y consonantes finales).`, ejemplo: `"Sus actos estaban en consonancia con lo que predicaba."` },
+        { palabra: `escarpado, -a`, tipo: `adjetivo`, definicion: `Que tiene mucha pendiente o desnivel pronunciado, difícil de subir o bajar; dicho de un terreno, monte o costa.`, ejemplo: `"El sendero se volvía escarpado a medida que se acercaban a la cumbre."` },
+        { palabra: `misiva`, tipo: `sustantivo`, definicion: `Carta o mensaje escrito que se envía a alguien, generalmente con un tono formal o solemne.`, ejemplo: `"Recibió una misiva anónima que le cambiaría la vida."` },
+        { palabra: `solemne`, tipo: `adjetivo`, definicion: `Que se celebra o se hace con formalidad y seriedad especial, a menudo ligado a un acto importante o ritual; también, algo grave o majestuoso en su forma.`, ejemplo: `"El silencio se volvió solemne cuando el juez entró a la sala."` },
+        { palabra: `venerable`, tipo: `adjetivo`, definicion: `Que merece respeto y admiración, generalmente por su edad, sabiduría o virtud.`, ejemplo: `"El anciano venerable del pueblo era consultado antes de cualquier decisión importante."` },
+        { palabra: `disgregación`, tipo: `sustantivo`, definicion: `Separación o descomposición de algo que estaba unido en partes o elementos que se dispersan.`, ejemplo: `"La disgregación del imperio se aceleró tras la muerte del emperador."` },
+        { palabra: `yermo, -a`, tipo: `adjetivo`, definicion: `Terreno despoblado, inculto o estéril; sin vegetación ni habitantes.`, ejemplo: `"Cruzaron kilómetros de tierra yerma sin encontrar una sola aldea."` },
+        { palabra: `páramo`, tipo: `sustantivo`, definicion: `Terreno alto, raso y desabrigado, expuesto al viento y de vegetación escasa; por extensión, lugar frío y desolado.`, ejemplo: `"El viento soplaba sin freno sobre el páramo helado."` },
+        { palabra: `sacristán`, tipo: `sustantivo`, definicion: `Persona encargada de cuidar la sacristía y ayudar en el servicio de una iglesia.`, ejemplo: `"El sacristán encendía las velas antes de cada misa."` },
+        { palabra: `impeler`, tipo: `verbo`, definicion: `Dar empuje a algo para que se mueva; también, incitar o estimular a alguien a hacer algo.`, ejemplo: `"Un impulso interior lo impelía a seguir buscando la verdad."` },
+        { palabra: `villorrio`, tipo: `sustantivo`, definicion: `Pueblo pequeño, considerado sin importancia o atractivo (uso despectivo).`, ejemplo: `"No era más que un villorrio olvidado en medio de la sierra."` },
+        { palabra: `dómine`, tipo: `sustantivo`, definicion: `Maestro de gramática latina o, por extensión, persona que adopta un tono pedante o sentencioso.`, ejemplo: `"Hablaba con aires de dómine, corrigiendo cada palabra ajena."` },
+        { palabra: `camposanto`, tipo: `sustantivo`, definicion: `Cementerio.`, ejemplo: `"Las tumbas del camposanto estaban cubiertas de hiedra."` },
+        { palabra: `rayano, -a`, tipo: `adjetivo`, definicion: `Que linda o está muy cerca de algo, casi al borde de ello (a menudo en sentido figurado).`, ejemplo: `"Su entusiasmo era rayano en la obsesión."` },
+        { palabra: `saya`, tipo: `sustantivo`, definicion: `Falda o vestidura femenina que cubre de la cintura para abajo.`, ejemplo: `"Las mujeres del pueblo vestían sayas de lana oscura."` },
+        { palabra: `estipendio`, tipo: `sustantivo`, definicion: `Paga o remuneración que se recibe por un trabajo o servicio.`, ejemplo: `"Cobraba un módico estipendio por sus lecciones de música."` },
+        { palabra: `tapia`, tipo: `sustantivo`, definicion: `Muro o pared, generalmente de tierra o adobe, que cierra un terreno.`, ejemplo: `"Saltó la tapia del huerto para escapar sin ser visto."` , imagen: `imagenes/tapia.jpeg`, epigrafe: `Tapia de tierra apisonada cerrando un terreno.` },
+        { palabra: `chapitel`, tipo: `sustantivo`, definicion: `Remate puntiagudo, generalmente en forma de pirámide o cono, que corona una torre.`, ejemplo: `"El chapitel de la catedral se veía desde varios kilómetros."`, imagen: `imagenes/chapitel.jpeg`, epigrafe: `Los chapiteles que rematan las torres de una catedral gótica.` },
+        { palabra: `alborozo`, tipo: `sustantivo`, definicion: `Alegría o regocijo muy intenso y manifiesto.`, ejemplo: `"La noticia fue recibida con alborozo por todo el pueblo."` },
+        { palabra: `nigromancia`, tipo: `sustantivo`, definicion: `Práctica de adivinación mediante la supuesta invocación de los muertos; magia negra en general.`, ejemplo: `"Lo acusaban de practicar nigromancia en secreto."` },
+        { palabra: `sortilegio`, tipo: `sustantivo`, definicion: `Acto de adivinación o hechizo realizado mediante magia; conjuro.`, ejemplo: `"La bruja pronunció un sortilegio para proteger la casa."` },
+        { palabra: `marjal`, tipo: `sustantivo`, definicion: `Terreno bajo y pantanoso, cubierto de vegetación acuática.`, ejemplo: `"Las aves anidaban entre los juncos del marjal."` },
+        { palabra: `engarzar`, tipo: `verbo`, definicion: `Trabar o unir varias piezas entre sí, como cuentas o eslabones; engastar una piedra preciosa.`, ejemplo: `"El joyero engarzó el rubí en un anillo de oro."` },
+        { palabra: `matojo`, tipo: `sustantivo`, definicion: `Mata o arbusto pequeño, generalmente silvestre y de poco valor.`, ejemplo: `"El terreno estaba cubierto de matojos secos."` , imagen: `imagenes/matojo.jpeg`, epigrafe: `Una mata silvestre de tallos delgados y hojas largas, creciendo entre la maleza.` },
+        { palabra: `ciénaga`, tipo: `sustantivo`, definicion: `Terreno cenagoso, lleno de lodo y agua estancada.`, ejemplo: `"Se hundieron hasta las rodillas al cruzar la ciénaga."` , imagen: `imagenes/cienaga.jpeg`, epigrafe: `Bosque anegado, con el suelo cubierto de agua estancada y lodo.` },
+        { palabra: `voluta`, tipo: `sustantivo`, definicion: `Forma en espiral, como la de ciertos adornos arquitectónicos o el humo al elevarse.`, ejemplo: `"Volutas de humo subían perezosas desde su cigarrillo."` , imagen: `imagenes/voluta.jpeg`, epigrafe: `La voluta: el remate en espiral del capitel jónico.` },
+        { palabra: `miasmático, -a`, tipo: `adjetivo`, definicion: `Relativo al miasma; que contiene o produce emanaciones nocivas.`, ejemplo: `"Un aire miasmático flotaba sobre el pantano."` },
+        { palabra: `miasma`, tipo: `sustantivo`, definicion: `Emanación o vapor maloliente y considerado nocivo, que antiguamente se creía causante de enfermedades.`, ejemplo: `"Los miasmas del basural se sentían desde lejos."` , imagen: `imagenes/miasma.jpeg`, epigrafe: `Los miasmas según la teoría médica antigua: el aire corrupto como causa de la peste, y los médicos con máscara de pico.` },
+        { palabra: `a la sazón`, tipo: `locución`, definicion: `Locución que significa "en aquel momento" o "entonces".`, ejemplo: `"El rey, a la sazón muy joven, apenas gobernaba por sí mismo."` },
+        { palabra: `iridiscencia`, tipo: `sustantivo`, definicion: `Propiedad de reflejar la luz descomponiéndola en los colores del arcoíris, cambiando según el ángulo.`, ejemplo: `"La iridiscencia de la burbuja de jabón cambiaba con cada movimiento."` , imagen: `imagenes/iridiscencia.jpeg`, epigrafe: `Nubes iridiscentes: la luz descompuesta en los colores del arcoíris.` },
+        { palabra: `pétreo, -a`, tipo: `adjetivo`, definicion: `De piedra, o que tiene sus características: dureza, solidez, inmovilidad.`, ejemplo: `"Su rostro pétreo no dejaba entrever ninguna emoción."` },
+        { palabra: `aprensión`, tipo: `sustantivo`, definicion: `Temor o recelo infundado, muchas veces relacionado con la salud o el contacto con algo desagradable.`, ejemplo: `"Le daba aprensión tocar la piel de la serpiente."` },
+        { palabra: `entornar`, tipo: `verbo`, definicion: `Cerrar una puerta, ventana u ojos sin ajustarlos del todo.`, ejemplo: `"Entornó los ojos, vencida por el sueño."` },
+        { palabra: `retazo`, tipo: `sustantivo`, definicion: `Trozo o fragmento sobrante de una tela, o por extensión, de cualquier cosa; fragmento suelto.`, ejemplo: `"Cosió la manta con retazos de distintos colores."` },
+        { palabra: `de estampía`, tipo: `locución`, definicion: `Locución que significa "de repente y a toda velocidad", de forma precipitada.`, ejemplo: `"Al oír el disparo, los caballos salieron de estampía."` },
+        { palabra: `olisquear`, tipo: `verbo`, definicion: `Oler algo con insistencia y de forma repetida, como hacen los animales.`, ejemplo: `"El perro olisqueaba cada rincón del jardín."` },
+        { palabra: `aspaviento`, tipo: `sustantivo`, definicion: `Demostración exagerada de un sentimiento, generalmente con gestos y ademanes excesivos.`, ejemplo: `"Hizo tantos aspavientos que todos se giraron a mirarla."` },
+        { palabra: `anatema`, tipo: `sustantivo`, definicion: `Maldición o condena solemne; también, persona o cosa execrada.`, ejemplo: `"Fue declarado anatema por la Iglesia tras publicar sus ideas."` },
+        { palabra: `cloqueo`, tipo: `sustantivo`, definicion: `Sonido que emite la gallina, especialmente cuando va a poner un huevo o cuida a sus pollos.`, ejemplo: `"Se oía el cloqueo nervioso de las gallinas en el corral."` },
+        { palabra: `canturrear`, tipo: `verbo`, definicion: `Cantar en voz baja y de manera despreocupada, casi sin darse cuenta.`, ejemplo: `"Canturreaba mientras lavaba los platos."` },
+        { palabra: `amedrentado, -a`, tipo: `adjetivo`, definicion: `Que siente miedo, atemorizado o intimidado.`, ejemplo: `"El niño, amedrentado por el ruido, se escondió bajo la cama."` },
+        { palabra: `abyecto, -a`, tipo: `adjetivo`, definicion: `Vil, despreciable, que provoca desprecio o repugnancia moral.`, ejemplo: `"Su traición fue vista como un acto abyecto por todos sus amigos."` },
+        { palabra: `funesto, -a`, tipo: `adjetivo`, definicion: `Que causa o anuncia desgracia; aciago.`, ejemplo: `"Aquella decisión tuvo consecuencias funestas para la familia."` },
+        { palabra: `teosofía`, tipo: `sustantivo`, definicion: `Doctrina que pretende alcanzar el conocimiento de lo divino mediante la intuición o la revelación mística, más allá de la razón.`, ejemplo: `"Se interesó por la teosofía tras leer sobre religiones orientales."` },
+        { palabra: `acaecer`, tipo: `verbo`, definicion: `Suceder, ocurrir un hecho (verbo usado sobre todo en tercera persona).`, ejemplo: `"El accidente acaeció durante la madrugada."` },
+        { palabra: `empellón`, tipo: `sustantivo`, definicion: `Empujón fuerte y brusco dado con el cuerpo.`, ejemplo: `"Le dio un empellón para abrirse paso entre la multitud."` },
+        { palabra: `impostura`, tipo: `sustantivo`, definicion: `Engaño en el que alguien finge ser quien no es, o simula cualidades o mérito que no tiene.`, ejemplo: `"Toda su reputación se basaba en una impostura."` },
+        { palabra: `críptico, -a`, tipo: `adjetivo`, definicion: `Oscuro, de difícil interpretación o comprensión; enigmático.`, ejemplo: `"Dejó una nota críptica que nadie supo descifrar."` },
+        { palabra: `esteta`, tipo: `sustantivo`, definicion: `Persona que cultiva la sensibilidad hacia la belleza y el arte, o que juzga las cosas principalmente por su valor estético.`, ejemplo: `"Era un esteta que no soportaba el desorden ni la fealdad."` },
+        { palabra: `caviloso, -a`, tipo: `adjetivo`, definicion: `Propenso a cavilar; que da vueltas obsesivas a sus pensamientos, preocupado o receloso.`, ejemplo: `"Se quedó caviloso, dándole vueltas a la misma duda toda la noche."` },
+        { palabra: `latente`, tipo: `adjetivo`, definicion: `Que existe pero no se manifiesta de forma visible o activa; oculto, en potencia.`, ejemplo: `"El conflicto entre ambos permanecía latente desde hacía años."` },
+        { palabra: `letargo`, tipo: `sustantivo`, definicion: `Estado de sueño profundo o inactividad prolongada; torpor.`, ejemplo: `"El oso pasa el invierno en letargo."` },
+        { palabra: `inveterado, -a`, tipo: `adjetivo`, definicion: `Muy antiguo, arraigado con el tiempo y difícil de erradicar (dicho de un hábito o costumbre).`, ejemplo: `"Su desconfianza hacia los extraños era un rasgo inveterado."` },
+        { palabra: `asir`, tipo: `verbo`, definicion: `Tomar o coger firmemente con la mano.`, ejemplo: `"Asió el bastón con fuerza antes de levantarse."` },
+        { palabra: `efigie`, tipo: `sustantivo`, definicion: `Representación o imagen de una persona, especialmente en escultura o pintura.`, ejemplo: `"Quemaron una efigie del tirano en la plaza pública."`, imagen: `imagenes/efigie.jpeg`, epigrafe: `Relieve funerario romano: efigies de los difuntos talladas en piedra.` },
+        { palabra: `pólipo`, tipo: `sustantivo`, definicion: `Animal acuático de cuerpo blando y tentáculos (como la anémona o el coral); también, tumor benigno que crece en una mucosa.`, ejemplo: `"Le detectaron un pólipo en el colon durante el chequeo."` },
+        { palabra: `tam-tam`, tipo: `sustantivo`, definicion: `Tambor africano, generalmente tocado con las manos, usado también para transmitir señales a distancia.`, ejemplo: `"El sonido del tam-tam anunciaba la llegada de visitantes."` , imagen: `imagenes/tam-tam.jpeg`, epigrafe: `Tambor africano de madera y parche de piel, tocado con las manos.` },
+        { palabra: `insigne`, tipo: `adjetivo`, definicion: `Célebre, distinguido, que destaca notablemente por sus méritos.`, ejemplo: `"Fue homenajeado como el insigne escritor de su generación."` },
+        { palabra: `patibulario, -a`, tipo: `adjetivo`, definicion: `Que tiene aspecto propio de un criminal o de alguien destinado al patíbulo; siniestro, de mal aspecto.`, ejemplo: `"El hombre tenía una mirada patibularia que inquietaba a todos."` },
+        { palabra: `inmarcesible`, tipo: `adjetivo`, definicion: `Que no se marchita ni se agota; que perdura sin decaer (uso literario, a menudo referido a la gloria).`, ejemplo: `"Le auguraron una gloria inmarcesible en la historia de su país."` },
+        { palabra: `ínclito, -a`, tipo: `adjetivo`, definicion: `Ilustre, célebre, digno de admiración (uso literario y solemne).`, ejemplo: `"Se recordaba al ínclito general con estatuas por toda la ciudad."` },
+        { palabra: `misantropía`, tipo: `sustantivo`, definicion: `Aversión o desprecio hacia el trato con otras personas o hacia la humanidad en general.`, ejemplo: `"Su misantropía lo llevó a vivir aislado en las montañas."` },
+        { palabra: `pompa`, tipo: `sustantivo`, definicion: `Ostentación y solemnidad con que se celebra algo; también, burbuja (pompa de jabón).`, ejemplo: `"El funeral se celebró con gran pompa y ceremonia."` },
+        { palabra: `mujeril`, tipo: `adjetivo`, definicion: `Propio o característico de mujeres (a veces con matiz despectivo en textos antiguos).`, ejemplo: `"Vestía con adornos mujeriles que llamaban la atención."` },
+        { palabra: `desvalido, -a`, tipo: `adjetivo`, definicion: `Que carece de amparo, recursos o protección; desamparado.`, ejemplo: `"Recogió a los niños desvalidos que vagaban por las calles."` },
+        { palabra: `prosternarse`, tipo: `verbo`, definicion: `Arrodillarse o inclinarse hasta el suelo en señal de respeto, sumisión o adoración.`, ejemplo: `"Los fieles se prosternaron ante el altar."` },
+        { palabra: `encaramar`, tipo: `verbo`, definicion: `Subir o trepar a un lugar alto; alzar a alguien o algo a una posición elevada.`, ejemplo: `"El niño se encaramó al árbol en pocos segundos."` },
+        { palabra: `estilobato`, tipo: `sustantivo`, definicion: `Base o plataforma escalonada sobre la que se asientan las columnas de un templo clásico.`, ejemplo: `"Las columnas se alzaban sobre un estilobato de mármol."` },
+        { palabra: `vulgo`, tipo: `sustantivo`, definicion: `El común de la gente, en contraposición a quienes tienen conocimientos especializados o distinción social.`, ejemplo: `"Lo que el vulgo llama suerte, él lo llamaba trabajo."` },
+        { palabra: `minucia`, tipo: `sustantivo`, definicion: `Cosa de poca importancia; detalle pequeño.`, ejemplo: `"Se preocupaba hasta por la más mínima minucia del proyecto."` },
+        { palabra: `reverberar`, tipo: `verbo`, definicion: `Reflejarse la luz o el sonido de forma repetida y prolongada.`, ejemplo: `"El sol reverberaba con fuerza sobre la arena blanca."`, imagen: `imagenes/reverberar.jpeg`, epigrafe: `La luz reverberando en la superficie del agua, que devuelve la imagen del tronco.` },
+        { palabra: `depauperado, -a`, tipo: `adjetivo`, definicion: `Empobrecido o debilitado, tanto en sentido económico como físico.`, ejemplo: `"La región quedó depauperada tras años de sequía."` },
+        { palabra: `lóbrego, -a`, tipo: `adjetivo`, definicion: `Oscuro, tenebroso, triste y sombrío.`, ejemplo: `"Avanzaron por el pasillo lóbrego del sótano."`, imagenes: [
+          { src: `imagenes/lobrego-cementerio.jpeg`, epigrafe: `Cementerio invernal: la escena lóbrega por excelencia, oscura y triste a la vez.` },
+          { src: `imagenes/lobrego-caseron.jpeg`, epigrafe: `Caserón abandonado entre árboles pelados, sombrío y desolado.` },
+        ] },
+        { palabra: `taciturno, -a`, tipo: `adjetivo`, definicion: `Callado, poco comunicativo, de carácter reservado y a menudo melancólico.`, ejemplo: `"Se volvió taciturno después de la pérdida de su hermano."` },
+        { palabra: `dar de bruces`, tipo: `locución`, definicion: `Locución que significa caer o toparse de golpe con algo, boca abajo o de frente.`, ejemplo: `"Corría tan rápido que me di de bruces contra la puerta."` },
+        { palabra: `buhardilla`, tipo: `sustantivo`, definicion: `Habitación situada en la parte más alta de una casa, bajo el tejado.`, ejemplo: `"Guardaba sus libros viejos en la buhardilla."` , imagen: `imagenes/buhardilla.jpeg`, epigrafe: `El espacio bajo el tejado, con la armadura de vigas a la vista.` },
+        { palabra: `gablete`, tipo: `sustantivo`, definicion: `Remate triangular u ornamental, en forma de aguja, típico de la arquitectura gótica.`, ejemplo: `"Los gabletes de la fachada estaban decorados con figuras talladas."` , imagen: `imagenes/gablete.jpeg`, epigrafe: `Gablete gótico: el remate triangular sobre un portal, con las hojas talladas en las aristas.` },
+        { palabra: `talante`, tipo: `sustantivo`, definicion: `Modo o disposición de ánimo con que alguien hace algo; carácter o humor de una persona.`, ejemplo: `"Lo recibió con buen talante a pesar de la mala noticia."` },
+        { palabra: `parangón`, tipo: `sustantivo`, definicion: `Comparación o semejanza establecida entre dos cosas o personas.`, ejemplo: `"No había parangón posible entre ambas obras."` },
+        { palabra: `huraño, -a`, tipo: `adjetivo`, definicion: `Que rehúye el trato con otras personas; esquivo, poco sociable.`, ejemplo: `"El gato del vecino era huraño y no dejaba que nadie lo tocara."` },
+        { palabra: `babel`, tipo: `sustantivo`, definicion: `Lugar o situación de gran confusión y desorden, especialmente por la mezcla de lenguas o voces.`, ejemplo: `"El mercado era una babel de idiomas y regateos."` },
+        { palabra: `pandemonio`, tipo: `sustantivo`, definicion: `Lugar de ruido y confusión extrema; caos generalizado.`, ejemplo: `"Cuando se cortó la luz, el estadio se convirtió en un pandemonio."` },
+        { palabra: `bastidor`, tipo: `sustantivo`, definicion: `Armazón que sirve de soporte a algo, como un lienzo o una decoración de escenario; en plural, "entre bastidores" alude a lo que ocurre fuera de la vista del público.`, ejemplo: `"Todo se decidió entre bastidores, antes de la reunión oficial."` , imagen: `imagenes/bastidor.jpeg`, epigrafe: `Bastidor de madera, el armazón sobre el que se tensa el lienzo.` },
+        { palabra: `respingar`, tipo: `verbo`, definicion: `Sacudirse bruscamente hacia atrás, como hace un animal asustado; también, resistirse a hacer algo de mala gana.`, ejemplo: `"El caballo respingó al oír el trueno."` },
+        { palabra: `grotesco, -a`, tipo: `adjetivo`, definicion: `Ridículo, extravagante, que provoca risa o rechazo por su fealdad o desproporción.`, ejemplo: `"La escena resultaba grotesca, casi una caricatura de sí misma."` },
+        { palabra: `exasperante`, tipo: `adjetivo`, definicion: `Que causa exasperación, irritación extrema o pérdida de paciencia.`, ejemplo: `"Su lentitud para responder era exasperante."` },
+        { palabra: `tribulación`, tipo: `sustantivo`, definicion: `Pena, angustia o aflicción, generalmente ocasionada por una desgracia o dificultad.`, ejemplo: `"Superó grandes tribulaciones antes de lograr su sueño."` },
+        { palabra: `atisbar`, tipo: `verbo`, definicion: `Vislumbrar algo de forma imprecisa o a distancia; observar con cautela y disimulo.`, ejemplo: `"Atisbó una figura entre los árboles al anochecer."` },
+        { palabra: `pulular`, tipo: `verbo`, definicion: `Abundar y moverse en gran número en un mismo lugar (personas, animales o cosas).`, ejemplo: `"Los turistas pululaban por las calles del centro."` },
+        { palabra: `caldear`, tipo: `verbo`, definicion: `Calentar un ambiente; en sentido figurado, exaltar los ánimos o tensar una situación.`, ejemplo: `"El discurso caldeó los ánimos de la multitud."` },
+        { palabra: `exhortar`, tipo: `verbo`, definicion: `Incitar a alguien, con palabras o razones, a hacer o dejar de hacer algo.`, ejemplo: `"El entrenador exhortó al equipo a no rendirse."` },
+        { palabra: `evo`, tipo: `sustantivo`, definicion: `Duración sin principio ni fin, o periodo de tiempo muy extenso; eternidad (uso poético o filosófico).`, ejemplo: `"Hablaba del alma como algo destinado a durar por todo el evo."` },
+        { palabra: `pagoda`, tipo: `sustantivo`, definicion: `Templo religioso de varios pisos, típico del este y sudeste asiático.`, ejemplo: `"Subieron los cientos de escalones hasta la pagoda dorada."` , imagen: `imagenes/pagoda.jpeg`, epigrafe: `Pagoda de cinco pisos, con sus tejados superpuestos.` },
+        { palabra: `plenilunio`, tipo: `sustantivo`, definicion: `Luna llena.`, ejemplo: `"La ceremonia se celebraba siempre bajo el plenilunio."` },
+        { palabra: `allende`, tipo: `preposición`, definicion: `Preposición que significa "del otro lado de" o "más allá de".`, ejemplo: `"Llegaban noticias de allende el mar."` },
+        { palabra: `frenesí`, tipo: `sustantivo`, definicion: `Estado de agitación o exaltación violenta, ya sea de ánimo, pasión o actividad.`, ejemplo: `"El público bailaba con frenesí al ritmo de la música."` },
+        { palabra: `enfático, -a`, tipo: `adjetivo`, definicion: `Que se expresa con énfasis, dando fuerza o relieve especial a lo que se dice.`, ejemplo: `"Negó de forma enfática haber estado allí."` },
+        { palabra: `ignoto, -a`, tipo: `adjetivo`, definicion: `Desconocido, no explorado ni descubierto.`, ejemplo: `"Se aventuraron hacia tierras ignotas del continente."` },
+        { palabra: `vetusto, -a`, tipo: `adjetivo`, definicion: `Muy antiguo, deteriorado por el paso del tiempo.`, ejemplo: `"Vivían en una casona vetusta al borde del pueblo."` },
+        { palabra: `oblongo, -a`, tipo: `adjetivo`, definicion: `Que es más largo que ancho, de forma alargada.`, ejemplo: `"La mesa oblonga ocupaba todo el salón."` },
+        { palabra: `subyacente`, tipo: `adjetivo`, definicion: `Que está debajo de algo, generalmente en sentido figurado: una idea o causa oculta bajo la superficie.`, ejemplo: `"Detrás de la discusión había un conflicto subyacente más profundo."` },
+        { palabra: `subyacer`, tipo: `verbo`, definicion: `Estar una cosa debajo de otra, o existir de forma oculta como base o causa de algo.`, ejemplo: `"Bajo esa calma subyacía una rabia contenida."` },
+        { palabra: `insondable`, tipo: `adjetivo`, definicion: `Que no se puede sondear o llegar al fondo; muy difícil de comprender o medir.`, ejemplo: `"Sus motivos eran insondables incluso para sus amigos más cercanos."` },
+        { palabra: `fortuito, -a`, tipo: `adjetivo`, definicion: `Que ocurre por casualidad, sin haber sido planeado ni previsto.`, ejemplo: `"Se conocieron de forma fortuita en la sala de espera."` },
+        { palabra: `departir`, tipo: `verbo`, definicion: `Conversar, hablar con alguien de manera distendida.`, ejemplo: `"Se quedaron departiendo un buen rato después de la cena."` },
+        { palabra: `jarana`, tipo: `sustantivo`, definicion: `Diversión bulliciosa y ruidosa; también, alboroto o riña.`, ejemplo: `"Se armó una jarana en la fiesta que duró hasta el amanecer."` },
+        { palabra: `bálsamo`, tipo: `sustantivo`, definicion: `Sustancia aromática con propiedades curativas; en sentido figurado, algo que alivia una pena o dolor.`, ejemplo: `"Sus palabras fueron un bálsamo para su tristeza."` },
+        { palabra: `de soslayo`, tipo: `locución`, definicion: `Locución que significa "de lado, oblicuamente"; mirar de reojo, sin volverse del todo.`, ejemplo: `"Lo miró de soslayo sin querer que se diera cuenta."` },
+        { palabra: `compunción`, tipo: `sustantivo`, definicion: `Sentimiento de pena o arrepentimiento por una falta cometida.`, ejemplo: `"Habló con compunción sobre el daño que había causado."` },
+        { palabra: `septentrional`, tipo: `adjetivo`, definicion: `Perteneciente o relativo al norte.`, ejemplo: `"Las regiones septentrionales del país eran mucho más frías."` },
+        { palabra: `solazar`, tipo: `verbo`, definicion: `Dar solaz, descanso o placer; recrear el ánimo.`, ejemplo: `"Se solazaba escuchando música al final del día."` },
+        { palabra: `solaz`, tipo: `sustantivo`, definicion: `Descanso, alivio o placer que reconforta el ánimo.`, ejemplo: `"Encontraba solaz en la lectura después de un día difícil."` },
+        { palabra: `sosiego`, tipo: `sustantivo`, definicion: `Calma, tranquilidad, quietud de ánimo.`, ejemplo: `"El campo le devolvía el sosiego que la ciudad le quitaba."` },
+        { palabra: `andrajo`, tipo: `sustantivo`, definicion: `Trozo de tela vieja y rota; prenda de vestir muy deteriorada.`, ejemplo: `"El mendigo iba vestido con andrajos."` },
+        { palabra: `suscitar`, tipo: `verbo`, definicion: `Provocar, ocasionar o dar lugar a algo, especialmente una discusión, duda o sentimiento.`, ejemplo: `"El anuncio suscitó numerosas críticas."` },
+        { palabra: `desapacible`, tipo: `adjetivo`, definicion: `Desagradable, áspero, que no resulta agradable a los sentidos o al ánimo (a menudo referido al clima).`, ejemplo: `"Hacía un tiempo desapacible, con viento frío y llovizna."` },
+        { palabra: `alarido`, tipo: `sustantivo`, definicion: `Grito agudo y fuerte, generalmente de dolor, terror o furia.`, ejemplo: `"Un alarido rompió el silencio de la noche."` },
+        { palabra: `chisporrotear`, tipo: `verbo`, definicion: `Despedir chispas de forma repetida, como hace el fuego o el aceite caliente.`, ejemplo: `"La leña chisporroteaba en la chimenea."` },
+        { palabra: `omnímodo, -a`, tipo: `adjetivo`, definicion: `Que lo abarca o comprende todo, sin límite ni excepción.`, ejemplo: `"Ejercía un poder omnímodo sobre sus súbditos."` },
+        { palabra: `atávico, -a`, tipo: `adjetivo`, definicion: `Relativo al atavismo; heredado de los antepasados, muy antiguo y arraigado en el instinto.`, ejemplo: `"Sintió un miedo atávico ante la oscuridad del bosque."` },
+        { palabra: `derrotero`, tipo: `sustantivo`, definicion: `Rumbo o dirección que se sigue para alcanzar un fin; camino trazado, literal o figurado.`, ejemplo: `"Su vida tomó un derrotero muy distinto al que esperaban sus padres."` },
+        { palabra: `entrever`, tipo: `verbo`, definicion: `Ver algo de forma confusa o parcial; sospechar o adivinar algo sin conocerlo con certeza.`, ejemplo: `"Entre la niebla, entrevió la silueta de la casa."` },
+        { palabra: `vehemente`, tipo: `adjetivo`, definicion: `Que actúa o se expresa con fuerza, pasión e intensidad.`, ejemplo: `"Defendió su postura con un discurso vehemente."` },
+        { palabra: `diletante`, tipo: `sustantivo`, definicion: `Persona que cultiva un arte o ciencia por afición, sin profundizar en ella con rigor profesional.`, ejemplo: `"Se consideraba un diletante de la pintura, nunca un profesional."` },
+        { palabra: `arrellanarse`, tipo: `verbo`, definicion: `Sentarse cómodamente, extendiéndose con desenfado en un asiento.`, ejemplo: `"Se arrellanó en el sillón con un libro en la mano."` },
+        { palabra: `meridional`, tipo: `adjetivo`, definicion: `Perteneciente o relativo al sur.`, ejemplo: `"El acento meridional se notaba en cuanto abría la boca."` },
+        { palabra: `intempestivo, -a`, tipo: `adjetivo`, definicion: `Que ocurre fuera de tiempo o de forma inoportuna.`, ejemplo: `"Nos hizo una visita intempestiva a medianoche."` },
+        { palabra: `cetrino, -a`, tipo: `adjetivo`, definicion: `De color amarillento verdoso, aplicado sobre todo al color de la piel o el semblante.`, ejemplo: `"Tenía el rostro cetrino de quien lleva días sin dormir."` },
+        { palabra: `inexorable`, tipo: `adjetivo`, definicion: `Que no se puede evitar, detener ni conmover con ruegos; implacable.`, ejemplo: `"El paso del tiempo es inexorable."` },
+        { palabra: `apear`, tipo: `verbo`, definicion: `Bajar a alguien o bajarse uno mismo de un vehículo o montura.`, ejemplo: `"Se apeó del caballo frente a la posada."` },
+        { palabra: `celeridad`, tipo: `sustantivo`, definicion: `Rapidez o prontitud en hacer algo.`, ejemplo: `"Resolvieron el trámite con una celeridad inusual."` },
+        { palabra: `anodino, -a`, tipo: `adjetivo`, definicion: `Insignificante, insustancial, que no produce ningún efecto ni interés notable.`, ejemplo: `"Fue una conversación anodina, sin nada memorable."` },
+        { palabra: `procurador, -a`, tipo: `sustantivo`, definicion: `Persona que representa legalmente a otra ante un tribunal; históricamente, quien administraba los bienes o intereses de alguien.`, ejemplo: `"El procurador presentó los documentos ante el juzgado."` },
+        { palabra: `paroxismo`, tipo: `sustantivo`, definicion: `Momento de mayor intensidad de un sentimiento, estado o proceso; exaltación extrema.`, ejemplo: `"Su furia llegó al paroxismo cuando descubrió la verdad."` },
+        { palabra: `iconoclasta`, tipo: `adjetivo`, definicion: `Que rechaza o ataca las creencias, tradiciones o figuras de autoridad establecidas.`, ejemplo: `"Sus ideas iconoclastas chocaban con la tradición académica."` },
+        { palabra: `admonición`, tipo: `sustantivo`, definicion: `Advertencia o reprensión, generalmente con tono severo.`, ejemplo: `"El profesor le dirigió una admonición por llegar tarde otra vez."` },
+        { palabra: `mentado, -a`, tipo: `adjetivo`, definicion: `Nombrado o mencionado anteriormente; también, famoso o de renombre.`, ejemplo: `"El mentado documento nunca llegó a aparecer."` },
+        { palabra: `engañifa`, tipo: `sustantivo`, definicion: `Engaño de poca importancia, hecho con astucia para sacar provecho.`, ejemplo: `"Todo el negocio resultó ser una engañifa."` },
+        { palabra: `párvulo, -a`, tipo: `sustantivo`, definicion: `Niño de corta edad, especialmente el que está en la etapa preescolar.`, ejemplo: `"Los párvulos jugaban en el patio bajo la mirada de la maestra."` },
+        { palabra: `oligofrenia`, tipo: `sustantivo`, definicion: `Término médico antiguo para referirse a una discapacidad intelectual (en desuso y considerado hoy inadecuado u ofensivo).`, ejemplo: `"El término 'oligofrenia' aparece en textos antiguos, pero hoy se considera obsoleto y estigmatizante."` },
+        { palabra: `discurrir`, tipo: `verbo`, definicion: `Reflexionar, pensar con detenimiento sobre algo; también, transcurrir el tiempo o fluir algo (como un río).`, ejemplo: `"Discurrió largo rato sobre la mejor manera de decírselo."` },
+        { palabra: `oquedad`, tipo: `sustantivo`, definicion: `Espacio hueco o vacío en un cuerpo sólido; en sentido figurado, vacío interior o falta de contenido.`, ejemplo: `"Detrás de sus discursos grandilocuentes solo había oquedad."` },
+        { palabra: `desdén`, tipo: `sustantivo`, definicion: `Indiferencia o desprecio con que se trata a alguien o algo.`, ejemplo: `"Respondió con desdén a sus disculpas."` },
+        { palabra: `lacerado, -a`, tipo: `adjetivo`, definicion: `Herido o dañado, física o moralmente.`, ejemplo: `"Tenía el orgullo lacerado tras la humillación pública."` },
+        { palabra: `hosco, -a`, tipo: `adjetivo`, definicion: `De trato áspero y poco amable; huraño y de mal humor.`, ejemplo: `"El portero era hosco y nunca respondía los saludos."` },
+        { palabra: `languidez`, tipo: `sustantivo`, definicion: `Estado de debilidad, decaimiento físico o falta de ánimo y vigor.`, ejemplo: `"Una languidez extraña se apoderó de él tras la enfermedad."` },
+        { palabra: `lánguido, -a`, tipo: `adjetivo`, definicion: `Débil, decaído, falto de energía o vigor.`, ejemplo: `"Se movía con gestos lánguidos, como si le costara cada esfuerzo."` },
+        { palabra: `pecio`, tipo: `sustantivo`, definicion: `Resto o fragmento de una nave que ha naufragado.`, ejemplo: `"Los buzos exploraron el pecio hundido hace siglos."`, imagen: `imagenes/pecio.jpeg`, epigrafe: `El casco de un buque naufragado, encallado y escorado contra la costa.` },
+        { palabra: `barahúnda`, tipo: `sustantivo`, definicion: `Ruido y confusión grandes, alboroto desordenado.`, ejemplo: `"Se armó una barahúnda cuando se cortó la electricidad en pleno concierto."` },
+        { palabra: `postrimerías`, tipo: `sustantivo`, definicion: `Últimos periodos o momentos de algo, especialmente de la vida.`, ejemplo: `"En las postrimerías del imperio, todo comenzó a desmoronarse."` },
+        { palabra: `exacción`, tipo: `sustantivo`, definicion: `Cobro injusto o violento de un impuesto, multa o tributo.`, ejemplo: `"El pueblo se rebeló contra las exacciones del gobernador."` },
+        { palabra: `acaudillar`, tipo: `verbo`, definicion: `Guiar o dirigir a un grupo de personas, especialmente en una lucha o rebelión, como jefe o caudillo.`, ejemplo: `"Acaudilló la resistencia contra el invasor durante años."` },
+        { palabra: `somero, -a`, tipo: `adjetivo`, definicion: `Superficial, poco profundo; que trata algo de forma breve, sin entrar en detalles.`, ejemplo: `"Hizo un análisis somero del problema, sin detenerse en detalles."` },
+        { palabra: `calzada`, tipo: `sustantivo`, definicion: `Parte de una vía pública destinada a la circulación de vehículos, en contraste con la vereda o acera.`, ejemplo: `"Cruzó la calzada corriendo justo antes de que cambiara el semáforo."` },
+        { palabra: `ébano`, tipo: `sustantivo`, definicion: `Árbol tropical de madera muy dura y de color negro, muy apreciada en ebanistería; también, el nombre de esa madera o el color negro intenso asociado a ella.`, ejemplo: `"El piano tenía teclas talladas en ébano."`, imagen: `imagenes/ebano.jpeg`, epigrafe: `Corte de un tronco de ébano: el duramen negro rodeado por la albura clara.` },
+        { palabra: `heráldico, -a`, tipo: `adjetivo`, definicion: `Perteneciente o relativo a la heráldica, el arte de describir e interpretar escudos de armas y blasones.`, ejemplo: `"Los símbolos heráldicos de la familia aparecían tallados sobre el portón del castillo."`, imagen: `imagenes/heraldico.jpeg`, epigrafe: `Figuras heráldicas: las particiones básicas con que se compone un escudo de armas.` },
+        { palabra: `astucia`, tipo: `sustantivo`, definicion: `Habilidad para engañar, actuar con maña o alcanzar un fin utilizando la inteligencia y el disimulo, más que la fuerza.`, ejemplo: `"Con astucia, logró convencer al guardia de que lo dejara pasar."` },
+        { palabra: `profuso, -a`, tipo: `adjetivo`, definicion: `Abundante, copioso, que se da o se presenta en gran cantidad.`, ejemplo: `"La herida sangraba de forma profusa."` },
+        { palabra: `ralo, -a`, tipo: `adjetivo`, definicion: `Que tiene sus partes o elementos poco tupidos y separados entre sí; escaso y disperso (dicho por ejemplo del pelo o la vegetación).`, ejemplo: `"Tenía una barba rala que apenas le cubría el rostro."`, imagen: `imagenes/ralo.jpeg`, epigrafe: `Cabello ralo: hebras escasas y separadas, dejando ver el cuero cabelludo.` },
+        { palabra: `trémulo, -a`, tipo: `adjetivo`, definicion: `Que tiembla o se estremece; tembloroso, vacilante.`, ejemplo: `"Con voz trémula, le confesó lo que sentía."` },
+        { palabra: `concisión`, tipo: `sustantivo`, definicion: `Cualidad de expresarse con pocas palabras, de forma breve y precisa, sin rodeos.`, ejemplo: `"Su estilo se caracterizaba por la concisión, sin una palabra de más."` },
+        { palabra: `deplorable`, tipo: `adjetivo`, definicion: `Que merece ser deplorado; lamentable, digno de lástima o reprobación.`, ejemplo: `"Aquella deplorable locura lo llevó a perderlo todo."` },
+        { palabra: `semblante`, tipo: `sustantivo`, definicion: `Expresión del rostro que refleja el estado de ánimo de una persona.`, ejemplo: `"Su semblante serio delataba la preocupación que sentía."` },
+        { palabra: `cataléptico, -a`, tipo: `adjetivo`, definicion: `Relativo a la catalepsia, un estado de suspensión de la sensibilidad y el movimiento, con rigidez muscular, que puede simular la muerte; también, persona que sufre ese estado.`, ejemplo: `"Cayó en un trance cataléptico y permaneció inmóvil durante horas."` },
+        { palabra: `sulfúreo, -a`, tipo: `adjetivo`, definicion: `Que tiene azufre o sus características: color amarillento, olor penetrante; en sentido figurado, asociado a lo infernal o diabólico.`, ejemplo: `"Un resplandor sulfúreo iluminaba la caverna."` },
+        { palabra: `hipocondríaco, -a`, tipo: `adjetivo`, definicion: `Que padece hipocondría, una preocupación excesiva y persistente por la propia salud, con temor infundado a padecer enfermedades.`, ejemplo: `"Era tan hipocondríaco que cualquier dolor lo convencía de estar gravemente enfermo."` },
+        { palabra: `impromptu`, tipo: `sustantivo`, definicion: `Pieza musical breve de carácter improvisado; por extensión, algo hecho o dicho de forma espontánea, sin preparación previa.`, ejemplo: `"Tocó un impromptu de Schubert en el piano del salón."` },
+        { palabra: `quiromancia`, tipo: `sustantivo`, definicion: `Práctica de adivinación que pretende predecir el carácter o el futuro de una persona a través de las líneas de la mano.`, ejemplo: `"La gitana leyó su destino en la palma mediante la quiromancia."` },
+        { palabra: `gozne`, tipo: `sustantivo`, definicion: `Herraje formado por dos piezas articuladas que permite el giro de una puerta o ventana; bisagra.`, ejemplo: `"La puerta chirriaba porque los goznes estaban oxidados."`, imagen: `imagenes/gozne.jpeg`, epigrafe: `Gozne de hierro forjado sobre una puerta de madera.` },
+        { palabra: `inhóspito, -a`, tipo: `adjetivo`, definicion: `Dicho de un lugar: que resulta incómodo, poco acogedor o inadecuado para vivir en él.`, ejemplo: `"Tras la tormenta, el páramo se volvió un paraje inhóspito donde nadie se atrevía a pernoctar."` },
+        { palabra: `umbroso, -a`, tipo: `adjetivo`, definicion: `Que tiene mucha sombra o la produce; sombrío por la espesura de la vegetación.`, ejemplo: `"Caminamos por un sendero umbroso donde apenas se colaba la luz entre las ramas."`, imagen: `imagenes/umbroso.jpeg`, epigrafe: `Sendero umbroso: la espesura de las ramas no deja pasar la luz.` },
       ]
     },
     {
       titulo: `Veinte mil leguas de viaje submarino`,
       autor: `Julio Verne`,
       palabras: [
-        { palabra: `escollo`, definicion: `Peñasco a flor de agua o poco visible que representa un peligro para la navegación; en sentido figurado, obstáculo o dificultad que impide avanzar.`, ejemplo: `"El barco encalló contra un escollo oculto bajo la superficie."` },
-        { palabra: `fusiforme`, definicion: `Que tiene forma de huso: alargada y más ancha en el centro, afinándose hacia los extremos.`, ejemplo: `"El cuerpo fusiforme del tiburón le permitía deslizarse por el agua con gran velocidad."` },
-        { palabra: `huso`, definicion: `Instrumento cilíndrico, más grueso en el medio y afinado en los extremos, usado para hilar torciendo la hebra; también da nombre a los husos horarios, por la forma en que se dividen los meridianos terrestres.`, ejemplo: `"La abuela hilaba la lana con un huso de madera."` },
-        { palabra: `ictiólogo, -a`, definicion: `Especialista en ictiología, la rama de la zoología que estudia los peces.`, ejemplo: `"El ictiólogo catalogó varias especies desconocidas durante la expedición submarina."` },
-        { palabra: `elucubración`, definicion: `Reflexión o razonamiento profundo y laborioso sobre un tema, a veces con matiz irónico por resultar rebuscado o poco fundado.`, ejemplo: `"Sus elucubraciones sobre el origen del monstruo marino no convencían a nadie."` },
-        { palabra: `quilla`, definicion: `Pieza que va de proa a popa por la parte inferior de un barco, formando la base de su armazón y sosteniendo toda su estructura.`, ejemplo: `"El monstruo marino golpeó la quilla del navío con una fuerza descomunal."` },
-        { palabra: `sucinto, -a`, definicion: `Breve, conciso, expresado en pocas palabras.`, ejemplo: `"Hizo un relato sucinto de lo ocurrido durante la travesía."` },
-        { palabra: `calado`, definicion: `Profundidad que alcanza la parte sumergida de un barco, medida desde la línea de flotación hasta la quilla; determina la profundidad mínima de agua que necesita para navegar sin encallar.`, ejemplo: `"El submarino tenía un calado tan reducido que podía acercarse a la costa sin riesgo."` },
-        { palabra: `alabarda`, definicion: `Arma antigua consistente en un asta larga rematada por una cuchilla puntiaguda con un hacha o punta transversal, usada tanto para golpear como para cortar.`, ejemplo: `"Los guardias custodiaban la entrada del palacio con alabardas en mano."` },
-        { palabra: `arquioterio`, definicion: `Género extinto de mamífero prehistórico parecido a un cerdo grande, de cabeza voluminosa y protuberancias óseas, que habitó América del Norte hace millones de años.`, ejemplo: `"El museo exhibía el cráneo fósil de un arquioterio junto a otros mamíferos del Eoceno."` },
-        { palabra: `hiracoterio`, definicion: `Género extinto de mamífero prehistórico de pequeño tamaño, considerado uno de los antepasados más antiguos del caballo, con varios dedos en cada pata.`, ejemplo: `"El hiracoterio apenas alcanzaba el tamaño de un zorro, muy lejos del caballo actual."` },
-        { palabra: `oréodon`, definicion: `Género extinto de mamífero prehistórico rumiante, de aspecto similar a una oveja u oveja-cerdo, que habitó América del Norte.`, ejemplo: `"Encontraron restos de un oréodon en las capas más profundas de la excavación."` },
-        { palabra: `queropótamo`, definicion: `Género extinto de mamífero prehistórico con aspecto de cerdo, que habitó Europa durante el Eoceno.`, ejemplo: `"Entre los fósiles identificaron la mandíbula de un queropótamo."` },
-        { palabra: `osamenta`, definicion: `Conjunto de los huesos de un esqueleto, generalmente ya sin la carne.`, ejemplo: `"La osamenta del animal yacía dispersa entre las rocas."` },
+        { palabra: `escollo`, tipo: `sustantivo`, definicion: `Peñasco a flor de agua o poco visible que representa un peligro para la navegación; en sentido figurado, obstáculo o dificultad que impide avanzar.`, ejemplo: `"El barco encalló contra un escollo oculto bajo la superficie."` },
+        { palabra: `fusiforme`, tipo: `adjetivo`, definicion: `Que tiene forma de huso: alargada y más ancha en el centro, afinándose hacia los extremos.`, ejemplo: `"El cuerpo fusiforme del tiburón le permitía deslizarse por el agua con gran velocidad."`, imagen: `imagenes/fusiforme.jpeg`, epigrafe: `Músculo fusiforme: grueso en el centro y afinado hacia los dos extremos, como un huso.` },
+        { palabra: `huso`, tipo: `sustantivo`, definicion: `Instrumento cilíndrico, más grueso en el medio y afinado en los extremos, usado para hilar torciendo la hebra; también da nombre a los husos horarios, por la forma en que se dividen los meridianos terrestres.`, ejemplo: `"La abuela hilaba la lana con un huso de madera."`, imagen: `imagenes/huso.jpeg`, epigrafe: `Huso de madera con la lana ya hilada enrollada alrededor.` },
+        { palabra: `ictiólogo, -a`, tipo: `sustantivo`, definicion: `Especialista en ictiología, la rama de la zoología que estudia los peces.`, ejemplo: `"El ictiólogo catalogó varias especies desconocidas durante la expedición submarina."` },
+        { palabra: `elucubración`, tipo: `sustantivo`, definicion: `Reflexión o razonamiento profundo y laborioso sobre un tema, a veces con matiz irónico por resultar rebuscado o poco fundado.`, ejemplo: `"Sus elucubraciones sobre el origen del monstruo marino no convencían a nadie."` },
+        { palabra: `quilla`, tipo: `sustantivo`, definicion: `Pieza que va de proa a popa por la parte inferior de un barco, formando la base de su armazón y sosteniendo toda su estructura.`, ejemplo: `"El monstruo marino golpeó la quilla del navío con una fuerza descomunal."`, imagen: `imagenes/codaste-quilla.jpeg`, epigrafe: `La quilla y sus refuerzos (contraquilla, sobrequilla) en el conjunto de popa.` },
+        { palabra: `sucinto, -a`, tipo: `adjetivo`, definicion: `Breve, conciso, expresado en pocas palabras.`, ejemplo: `"Hizo un relato sucinto de lo ocurrido durante la travesía."` },
+        { palabra: `calado`, tipo: `sustantivo`, definicion: `Profundidad que alcanza la parte sumergida de un barco, medida desde la línea de flotación hasta la quilla; determina la profundidad mínima de agua que necesita para navegar sin encallar.`, ejemplo: `"El submarino tenía un calado tan reducido que podía acercarse a la costa sin riesgo."` },
+        { palabra: `alabarda`, tipo: `sustantivo`, definicion: `Arma antigua consistente en un asta larga rematada por una cuchilla puntiaguda con un hacha o punta transversal, usada tanto para golpear como para cortar.`, ejemplo: `"Los guardias custodiaban la entrada del palacio con alabardas en mano."`, imagen: `imagenes/alabarda.jpeg`, epigrafe: `Colección de alabardas: el asta larga rematada por punta, hacha y gancho.` },
+        { palabra: `arquioterio`, tipo: `sustantivo`, definicion: `Género extinto de mamífero prehistórico parecido a un cerdo grande, de cabeza voluminosa y protuberancias óseas, que habitó América del Norte hace millones de años.`, ejemplo: `"El museo exhibía el cráneo fósil de un arquioterio junto a otros mamíferos del Eoceno."`, imagen: `imagenes/arquioterio.jpeg`, epigrafe: `Esqueleto montado de arquioterio: cráneo enorme y protuberancias óseas en la mandíbula.` },
+        { palabra: `hiracoterio`, tipo: `sustantivo`, definicion: `Género extinto de mamífero prehistórico de pequeño tamaño, considerado uno de los antepasados más antiguos del caballo, con varios dedos en cada pata.`, ejemplo: `"El hiracoterio apenas alcanzaba el tamaño de un zorro, muy lejos del caballo actual."`, imagen: `imagenes/hiracoterio.jpeg`, epigrafe: `Reconstrucción del hiracoterio: del tamaño de un zorro, con varios dedos en cada pata.` },
+        { palabra: `oréodon`, tipo: `sustantivo`, definicion: `Género extinto de mamífero prehistórico rumiante, de aspecto similar a una oveja u oveja-cerdo, que habitó América del Norte.`, ejemplo: `"Encontraron restos de un oréodon en las capas más profundas de la excavación."`, imagen: `imagenes/oreodon.jpeg`, epigrafe: `Reconstrucción de un oréodon, el rumiante prehistórico a medio camino entre oveja y cerdo.` },
+        { palabra: `queropótamo`, tipo: `sustantivo`, definicion: `Género extinto de mamífero prehistórico con aspecto de cerdo, que habitó Europa durante el Eoceno.`, ejemplo: `"Entre los fósiles identificaron la mandíbula de un queropótamo."` },
+        { palabra: `osamenta`, tipo: `sustantivo`, definicion: `Conjunto de los huesos de un esqueleto, generalmente ya sin la carne.`, ejemplo: `"La osamenta del animal yacía dispersa entre las rocas."`, imagen: `imagenes/osamenta.jpeg`, epigrafe: `Huesos sueltos de un esqueleto, ya descarnados y dispersos.` },
+        { palabra: `batayola`, tipo: `sustantivo`, definicion: `En marina, barandilla o armazón de madera que corre a lo largo de la borda del buque y sobre la que se estibaban los coyes enrollados para formar el empalletado. También se escribe *batallola*.`, ejemplo: `"Los marineros se agolpaban contra la batallola para ver mejor la estela luminosa."` },
+        { palabra: `empalletado`, tipo: `sustantivo`, definicion: `En marina, parapeto protector que se forma en las bordas de un buque apilando coyes (hamacas), lonas y ropa enrollada, para resguardar a la tripulación de las balas y astillas durante el combate; por extensión, la baranda o antepecho así reforzado. El *castillo* es la parte elevada de la proa, de modo que el "empalletado del castillo" es esa defensa en la borda de proa.`, ejemplo: `"Se apoyó en el empalletado del castillo para escrutar el horizonte."` },
+        { palabra: `quimera`, tipo: `sustantivo`, definicion: `Ilusión o fantasía que se toma por posible sin serlo; aquello que solo existe en la imaginación. Viene del monstruo mitológico griego formado por partes de león, cabra y serpiente. En zoología también designa un pez cartilaginoso de aguas profundas, pariente lejano de los tiburones.`, ejemplo: `"Perseguir al monstruo por todos los mares empezaba a parecer una quimera."` },
+        { palabra: `codaste`, tipo: `sustantivo`, definicion: `Pieza vertical y robusta que remata la popa de un barco, levantándose como prolongación de la quilla; sobre ella se articula el timón y en ella terminan las cuadernas de popa. Es la contrapartida de la roda, que cierra la proa.`, ejemplo: `"La sombra pasó bajo el codaste de la fragata y desapareció en la estela."`, imagen: `imagenes/codaste-quilla.jpeg`, epigrafe: `El codaste levantándose desde la quilla, con el contracodaste y la curva de popa.` },
+        { palabra: `obenque`, tipo: `sustantivo`, definicion: `Cada uno de los cabos gruesos que sujetan un mástil hacia los costados del barco, yendo desde lo alto del palo hasta la borda. Suelen llevar travesaños (los flechastes) que forman una escala de cuerda por la que los marineros trepan a las vergas. Se usa casi siempre en plural: los *obenques*.`, ejemplo: `"Ned Land trepó por los obenques para escrutar el horizonte desde lo alto."`, imagenes: [
+          { src: `imagenes/obenques-maqueta.jpeg`, epigrafe: `Los obenques tendidos del palo a la borda, con los flechastes formando la escala.` },
+          { src: `imagenes/obenques-diagrama.jpeg`, epigrafe: `Plano de jarcia: los obenques de cada palo en color, y los nudos y costuras con que se rematan.` },
+        ] },
+        { palabra: `babirusa`, tipo: `sustantivo`, definicion: `Mamífero salvaje parecido a un cerdo, propio de las islas de Indonesia. El macho es inconfundible: sus colmillos superiores crecen hacia arriba atravesándole el hocico y curvándose sobre la frente. El nombre viene del malayo *babi rusa*, "cerdo ciervo", por esos colmillos que parecen cuernos.`, ejemplo: `"Cazaron una babirusa en los bosques de la isla y la asaron en la playa."`, imagen: `imagenes/babirusa.jpeg`, epigrafe: `Macho de babirusa: los colmillos superiores le perforan el hocico y se curvan hacia la frente.` },
+        { palabra: `sosegado, -a`, tipo: `adjetivo`, definicion: `Tranquilo, calmo, sin agitación ni sobresalto; dicho de una persona, de carácter reposado, y dicho de una situación, apacible. Es el participio de *sosegar*, y comparte raíz con *sosiego*.`, ejemplo: `"El mar, sosegado desde el amanecer, no anunciaba la tormenta de la noche."` },
+        { palabra: `sotavento`, tipo: `sustantivo`, definicion: `El costado del barco opuesto a aquel por donde entra el viento, y por extensión toda la banda o el lado hacia el que el viento sopla. Su contrario es *barlovento*, el lado de donde viene el viento. "Caer a sotavento" es ser arrastrado en esa dirección.`, ejemplo: `"La isla quedaba a sotavento, y la corriente los empujaba directamente hacia ella."`, imagen: `imagenes/sotavento.jpeg`, epigrafe: `El viento entra por barlovento y sale por sotavento: las dos bandas del barco respecto del viento.` },
+        { palabra: `través`, tipo: `sustantivo`, definicion: `En marina, la dirección perpendicular al eje del barco: algo que se ve "por el través" queda justo al costado, ni por la proa ni por la popa. Fuera del vocabulario náutico aparece sobre todo en las locuciones *a través de* ("por entre" o "por medio de") y *al través* ("de lado, oblicuamente").`, ejemplo: `"Avistaron el arrecife por el través de estribor, a menos de una milla."`, imagen: `imagenes/traves-rumbos.jpeg`, epigrafe: `Rosa de rumbos relativos al barco: "por el través" es la dirección perpendicular, a media distancia entre la proa y la popa.` },
       ]
     },
   ];
@@ -449,13 +607,61 @@
   const shelf = document.getElementById("shelf");
   const searchInput = document.getElementById("search");
   const countEl = document.getElementById("count");
+  const tipoBar = document.getElementById("tipoBar");
+
+  // Tipo activo: null = todos.
+  let tipoActivo = null;
 
   function formatEmphasis(text) {
     return text.replace(/\*([^*]+)\*/g, "<em>$1</em>");
   }
 
+  // Una palabra puede llevar una sola imagen ({ imagen, epigrafe }) o varias
+  // ({ imagenes: [{ src, epigrafe }, ...] }). Se normalizan al mismo formato.
+  function imagenesDe(p) {
+    if (Array.isArray(p.imagenes)) return p.imagenes;
+    if (p.imagen) return [{ src: p.imagen, epigrafe: p.epigrafe }];
+    return [];
+  }
+
   function totalPalabras() {
     return libros.reduce((sum, b) => sum + b.palabras.length, 0);
+  }
+
+  // Los contadores de los chips se calculan sobre el resultado de la búsqueda de texto,
+  // pero ignorando el tipo activo: si no, al elegir un tipo los demás quedarían en cero.
+  function conteoPorTipo(q) {
+    const counts = new Map();
+    let total = 0;
+    libros.forEach((libro) =>
+      libro.palabras.forEach((p) => {
+        if (q && !p.palabra.toLowerCase().includes(q)) return;
+        total++;
+        counts.set(p.tipo, (counts.get(p.tipo) || 0) + 1);
+      })
+    );
+    return { total, porTipo: [...counts.entries()].sort((a, b) => b[1] - a[1]) };
+  }
+
+  function renderTipos(filter) {
+    const q = (filter || "").trim().toLowerCase();
+    const { total, porTipo } = conteoPorTipo(q);
+    tipoBar.innerHTML = "";
+    const chips = [["todas", total, null], ...porTipo.map(([t, n]) => [t, n, t])];
+
+    chips.forEach(([label, n, valor]) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "tipo-chip";
+      chip.setAttribute("aria-pressed", String(tipoActivo === valor));
+      chip.innerHTML = `${label}<span class="chip-count">${n}</span>`;
+      chip.addEventListener("click", () => {
+        tipoActivo = tipoActivo === valor ? null : valor;
+        renderTipos(searchInput.value);
+        render(searchInput.value);
+      });
+      tipoBar.appendChild(chip);
+    });
   }
 
   function render(filter) {
@@ -464,11 +670,13 @@
     let shown = 0;
 
     libros.forEach((libro) => {
-      const palabras = q
-        ? libro.palabras.filter((p) => p.palabra.toLowerCase().includes(q))
-        : libro.palabras;
+      const palabras = libro.palabras.filter(
+        (p) =>
+          (!q || p.palabra.toLowerCase().includes(q)) &&
+          (!tipoActivo || p.tipo === tipoActivo)
+      );
 
-      if (q && palabras.length === 0) return;
+      if (palabras.length === 0) return;
 
       shown += palabras.length;
 
@@ -490,10 +698,35 @@
         const row = document.createElement("div");
         row.className = "word";
         row.innerHTML = `
-          <span class="word-term">${p.palabra}</span>
+          <span class="word-term">${p.palabra}<span class="word-tipo">${p.tipo}</span></span>
           <p class="word-def">${formatEmphasis(p.definicion)}</p>
           <p class="word-ex">${p.ejemplo}</p>
         `;
+
+        const figuras = imagenesDe(p);
+        if (figuras.length) {
+          const galeria = document.createElement("div");
+          galeria.className = "word-figs";
+
+          figuras.forEach(({ src, epigrafe }) => {
+            const texto = epigrafe || `Imagen: ${p.palabra}`;
+            const fig = document.createElement("figure");
+            fig.className = "word-fig";
+            const img = document.createElement("img");
+            img.src = src;
+            img.alt = texto;
+            img.loading = "lazy";
+            img.addEventListener("click", () => openLightbox(src, texto));
+            const cap = document.createElement("figcaption");
+            cap.textContent = texto;
+            fig.appendChild(img);
+            fig.appendChild(cap);
+            galeria.appendChild(fig);
+          });
+
+          row.appendChild(galeria);
+        }
+
         words.appendChild(row);
       });
 
@@ -501,15 +734,44 @@
       shelf.appendChild(group);
     });
 
-    if (q && shown === 0) {
-      shelf.innerHTML = `<p class="empty">No se encontraron palabras para "${filter}".</p>`;
+    const filtrando = Boolean(q || tipoActivo);
+
+    if (filtrando && shown === 0) {
+      const detalle = q ? `"${filter}"` : `el tipo "${tipoActivo}"`;
+      shelf.innerHTML = `<p class="empty">No se encontraron palabras para ${detalle}.</p>`;
     }
 
-    countEl.textContent = q
+    countEl.textContent = filtrando
       ? `${shown} de ${totalPalabras()} palabras`
       : `${totalPalabras()} palabras en total`;
   }
 
-  searchInput.addEventListener("input", () => render(searchInput.value));
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+  const lightboxCaption = document.getElementById("lightboxCaption");
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxImg.alt = caption;
+    lightboxCaption.textContent = caption;
+    lightbox.classList.add("open");
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("open");
+    lightboxImg.src = "";
+  }
+
+  lightbox.addEventListener("click", closeLightbox);
+  document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  searchInput.addEventListener("input", () => {
+    renderTipos(searchInput.value);
+    render(searchInput.value);
+  });
+  renderTipos("");
   render("");
 </script>

@@ -38,3 +38,4 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *El signo de los cuatro* — Arthur Conan Doyle
 - *Los crímenes de la calle Morgue* — Edgar Allan Poe
 - *El gato negro* — Edgar Allan Poe
+- *El mundo en juego* — Christopher Stork
