@@ -98,10 +98,16 @@
     margin: 0;
   }
 
+  /* La línea de tiempo se sale del ancho de lectura y toma casi toda la pantalla:
+     es lo único de la página que gana con el espacio. El texto sigue acotado. */
+  .ancho-total {
+    width: 94vw;
+    margin-left: calc(50% - 47vw);
+  }
+
   .timeline-scroll {
     overflow-x: auto;
-    margin: 0 -1.5rem;
-    padding: 0 1.5rem;
+    padding-bottom: 0.5rem;
   }
 
   .timeline {
@@ -459,7 +465,7 @@
     </p>
   </header>
 
-  <div class="zoom-bar">
+  <div class="zoom-bar ancho-total">
     <span class="zoom-label">Escala</span>
     <button type="button" id="zoom-out" aria-label="Alejar">−</button>
     <button type="button" id="zoom-in" aria-label="Acercar">+</button>
@@ -469,7 +475,7 @@
     <button type="button" id="toggle-leidos">Ocultar contexto</button>
   </div>
 
-  <div class="timeline-scroll">
+  <div class="timeline-scroll ancho-total">
     <div class="timeline" id="timeline"></div>
   </div>
 
@@ -661,6 +667,37 @@
     { nombre: "Roberto Bolaño", nacimiento: 1953, muerte: 2003, nacionalidad: "Chile", contexto: true },
     { nombre: "Kazuo Ishiguro", nacimiento: 1954, muerte: null, nacionalidad: "Reino Unido", contexto: true },
     { nombre: "Michel Houellebecq", nacimiento: 1956, muerte: null, nacionalidad: "Francia", contexto: true },
+
+    // El linaje del gótico y lo fantástico, que es de donde salen Poe, Machen y Lovecraft.
+    { nombre: "E. T. A. Hoffmann", nacimiento: 1776, muerte: 1822, nacionalidad: "Alemania", contexto: true },
+    { nombre: "Mary Shelley", nacimiento: 1797, muerte: 1851, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Nathaniel Hawthorne", nacimiento: 1804, muerte: 1864, nacionalidad: "Estados Unidos", contexto: true },
+    { nombre: "Sheridan Le Fanu", nacimiento: 1814, muerte: 1873, nacionalidad: "Irlanda", contexto: true },
+    { nombre: "Herman Melville", nacimiento: 1819, muerte: 1891, nacionalidad: "Estados Unidos", contexto: true },
+    { nombre: "Gustavo Adolfo Bécquer", nacimiento: 1836, muerte: 1870, nacionalidad: "España", contexto: true },
+    { nombre: "Ambrose Bierce", nacimiento: 1842, muerte: 1914, nacionalidad: "Estados Unidos", contexto: true },
+    { nombre: "Bram Stoker", nacimiento: 1847, muerte: 1912, nacionalidad: "Irlanda", contexto: true },
+    { nombre: "M. R. James", nacimiento: 1862, muerte: 1936, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Algernon Blackwood", nacimiento: 1869, muerte: 1951, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Lord Dunsany", nacimiento: 1878, muerte: 1957, nacionalidad: "Irlanda", contexto: true },
+
+    // Renacimiento e Ilustración, que habían quedado casi vacíos.
+    { nombre: "François Rabelais", nacimiento: 1494, muerte: 1553, nacionalidad: "Francia", contexto: true },
+    { nombre: "Michel de Montaigne", nacimiento: 1533, muerte: 1592, nacionalidad: "Francia", contexto: true },
+    { nombre: "Lope de Vega", nacimiento: 1562, muerte: 1635, nacionalidad: "España", contexto: true },
+    { nombre: "Daniel Defoe", nacimiento: 1660, muerte: 1731, nacionalidad: "Inglaterra", contexto: true },
+
+    // Aventura y policial, alrededor de Stevenson y Christie.
+    { nombre: "Joseph Conrad", nacimiento: 1857, muerte: 1924, nacionalidad: "Polonia / Inglaterra", contexto: true },
+    { nombre: "Rudyard Kipling", nacimiento: 1865, muerte: 1936, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "G. K. Chesterton", nacimiento: 1874, muerte: 1936, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Raymond Chandler", nacimiento: 1888, muerte: 1959, nacionalidad: "Estados Unidos", contexto: true },
+
+    // La ciencia ficción después de Asimov y Bradbury.
+    { nombre: "Arthur C. Clarke", nacimiento: 1917, muerte: 2008, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Stanisław Lem", nacimiento: 1921, muerte: 2006, nacionalidad: "Polonia", contexto: true },
+    { nombre: "Philip K. Dick", nacimiento: 1928, muerte: 1982, nacionalidad: "Estados Unidos", contexto: true },
+    { nombre: "Ursula K. Le Guin", nacimiento: 1929, muerte: 2018, nacionalidad: "Estados Unidos", contexto: true },
   ];
 
   // Épocas literarias, como partición sin solapes: cada una arranca donde termina
@@ -905,14 +942,20 @@
     scroller.scrollLeft = (1500 - YEAR_MIN) * ZOOM_LEVELS[zoomIndex];
   });
 
+  // Año que se toma como centro de la obra de un autor: el de sus cuarenta, salvo
+  // que haya muerto antes —Bécquer a los 34, Shelley a los 30— y entonces el de su
+  // muerte, para no ubicarlo en una época en la que ya no estaba.
+  function anioCentral(autor) {
+    const tope = autor.muerte ?? YEAR_MAX;
+    return Math.min(autor.nacimiento + 40, tope);
+  }
+
   // Lista de épocas al pie, con los autores de la línea que caen en cada una.
-  // Se reparten por el año en que cada uno cumplió cuarenta: la edad en que casi
-  // todos habían publicado ya lo que los define.
   (function listarEpocas() {
     const dl = document.getElementById("epocas-lista");
     PERIODOS.forEach((p) => {
       const dentro = autoresOrdenados.filter((a) => {
-        const centro = a.nacimiento + 40;
+        const centro = anioCentral(a);
         return centro >= p.desde && centro < p.hasta;
       });
 
