@@ -106,14 +106,92 @@
 
   .timeline {
     position: relative;
-    min-width: 900px;
     padding-top: 2.2rem;
+  }
+
+  .zoom-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .zoom-bar .zoom-label {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 0.2rem;
+  }
+
+  .zoom-bar button {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--ink);
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.28rem 0.6rem;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .zoom-bar button:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .zoom-bar button:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
 
   .axis {
     position: relative;
+    z-index: 1;
     height: 34px;
     border-top: 1px solid var(--rule);
+  }
+
+  /* Bandas de época: franjas verticales tenues detrás de las filas. */
+  /* Arranca justo debajo del eje (padding-top del timeline + alto del eje). */
+  .periodos {
+    position: absolute;
+    top: calc(2.2rem + 34px);
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+  }
+
+  .timeline.sin-periodos .periodos {
+    display: none;
+  }
+
+  .periodo-banda {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid var(--rule-soft);
+  }
+
+  .periodo-banda:nth-child(odd) {
+    background: color-mix(in srgb, var(--accent2) 7%, transparent);
+  }
+
+  .periodo-nombre {
+    position: absolute;
+    top: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    white-space: nowrap;
+    padding: 0.2rem 0 0 0.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .tick {
@@ -160,6 +238,8 @@
   }
 
   .rows {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
@@ -185,6 +265,35 @@
 
   .lifebar:hover {
     background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  /* Autores que están solo para dar contexto de época, no leídos. */
+  .lifebar.contexto {
+    background: transparent;
+    border-color: var(--rule);
+    border-style: dashed;
+  }
+
+  .lifebar.contexto::before,
+  .lifebar.contexto::after {
+    background: var(--rule);
+  }
+
+  .lifebar.contexto:hover {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+
+  .row.contexto .name-tag,
+  .row.contexto .meta-tag {
+    color: var(--ink-soft);
+  }
+
+  .row.contexto .name-tag {
+    font-size: 0.9rem;
+  }
+
+  .timeline.solo-leidos .row.contexto {
+    display: none;
   }
 
   .lifebar::before,
@@ -251,11 +360,80 @@
     flex-shrink: 0;
   }
 
+  .swatch.contexto {
+    border: 1px dashed var(--rule);
+    background: transparent;
+  }
+
+  .swatch.periodo {
+    border: 1px solid var(--rule-soft);
+    background: color-mix(in srgb, var(--accent2) 7%, transparent);
+  }
+
   .swatch.today {
     border: none;
     background: repeating-linear-gradient(to bottom, var(--today) 0 3px, transparent 3px 6px);
     width: 1px;
     height: 14px;
+  }
+
+  section.epocas {
+    margin-top: 3.5rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  section.epocas h2 {
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin: 0 0 0.6rem;
+  }
+
+  .epocas-nota {
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    max-width: 66ch;
+    margin: 0 0 2rem;
+  }
+
+  section.epocas dl {
+    margin: 0;
+  }
+
+  section.epocas dt {
+    font-size: 1rem;
+    margin-top: 1.6rem;
+    color: var(--accent2);
+  }
+
+  section.epocas dt:first-child {
+    margin-top: 0;
+  }
+
+  .epoca-anios {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    margin-left: 0.5em;
+  }
+
+  section.epocas dd {
+    margin: 0.35rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 68ch;
+  }
+
+  .epoca-autores {
+    font-size: 0.82rem !important;
+    color: var(--ink-soft);
+    margin-top: 0.5rem !important;
+  }
+
+  .epoca-autores .es-contexto {
+    opacity: 0.72;
+    font-style: italic;
   }
 
   footer {
@@ -275,10 +453,21 @@
     <p class="eyebrow">Vocabulario · Contexto de lectura</p>
     <h1>Cuándo vivió <em>cada autor</em></h1>
     <p class="sub">
-      Una línea de tiempo de los autores de los libros que voy leyendo, para ubicar
-      en qué época y contexto histórico escribió cada uno.
+      Una línea de tiempo para ubicar en qué época escribió cada uno. Las barras llenas
+      son los nombres que vengo anotando; las punteadas están agregadas para poblar cada
+      período y dar referencia.
     </p>
   </header>
+
+  <div class="zoom-bar">
+    <span class="zoom-label">Escala</span>
+    <button type="button" id="zoom-out" aria-label="Alejar">−</button>
+    <button type="button" id="zoom-in" aria-label="Acercar">+</button>
+    <button type="button" id="zoom-fit">Todo</button>
+    <button type="button" id="zoom-modernos">Desde 1500</button>
+    <button type="button" id="toggle-periodos">Ocultar épocas</button>
+    <button type="button" id="toggle-leidos">Ocultar contexto</button>
+  </div>
 
   <div class="timeline-scroll">
     <div class="timeline" id="timeline"></div>
@@ -286,11 +475,23 @@
 
   <section class="legend">
     <div class="legend-item"><span class="swatch"></span> Años de vida</div>
+    <div class="legend-item"><span class="swatch contexto"></span> Agregado para dar contexto de época</div>
+    <div class="legend-item"><span class="swatch periodo"></span> Épocas literarias</div>
     <div class="legend-item"><span class="swatch today"></span> Hoy (2026)</div>
   </section>
 
+  <section class="epocas">
+    <h2>Las épocas</h2>
+    <p class="epocas-nota">
+      Las fronteras son convenciones: los movimientos se solapan, empiezan antes en un país
+      que en otro y casi nunca terminan de golpe. Están cortadas de forma limpia para poder
+      dibujarlas, pero conviene leerlas como zonas, no como fechas.
+    </p>
+    <dl id="epocas-lista"></dl>
+  </section>
+
   <footer>
-    Escala: 1260–2026. Para agregar un autor nuevo, sumá una entrada al arreglo <code>autores</code> en el código de esta página.
+    Escala: 1260–2026. La vista arranca en 1500, donde está el grueso de los autores; Dante queda dos siglos y medio más atrás, y se llega a él con «Todo» o arrastrando hacia la izquierda. Para agregar un autor nuevo, sumá una entrada al arreglo <code>autores</code> en el código de esta página.
   </footer>
 </div>
 
@@ -404,73 +605,194 @@
       nacimiento: 1863,
       muerte: 1947,
       nacionalidad: "Gales"
-    }
+    },
+    {
+      nombre: "Miguel de Cervantes",
+      nacimiento: 1547,
+      muerte: 1616,
+      nacionalidad: "España"
+    },
+    {
+      nombre: "William Shakespeare",
+      nacimiento: 1564,
+      muerte: 1616,
+      nacionalidad: "Inglaterra"
+    },
+
+    // Los que siguen no son parte de la lista original: están solo para poblar las
+    // épocas y dar referencia, y se dibujan con la barra punteada y atenuada.
+    { nombre: "Francesco Petrarca", nacimiento: 1304, muerte: 1374, nacionalidad: "Italia", contexto: true },
+    { nombre: "Giovanni Boccaccio", nacimiento: 1313, muerte: 1375, nacionalidad: "Italia", contexto: true },
+    { nombre: "Geoffrey Chaucer", nacimiento: 1343, muerte: 1400, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Erasmo de Róterdam", nacimiento: 1466, muerte: 1536, nacionalidad: "Países Bajos", contexto: true },
+    { nombre: "Nicolás Maquiavelo", nacimiento: 1469, muerte: 1527, nacionalidad: "Italia", contexto: true },
+    { nombre: "Luis de Góngora", nacimiento: 1561, muerte: 1627, nacionalidad: "España", contexto: true },
+    { nombre: "Francisco de Quevedo", nacimiento: 1580, muerte: 1645, nacionalidad: "España", contexto: true },
+    { nombre: "Pedro Calderón de la Barca", nacimiento: 1600, muerte: 1681, nacionalidad: "España", contexto: true },
+    { nombre: "Sor Juana Inés de la Cruz", nacimiento: 1648, muerte: 1695, nacionalidad: "Nueva España", contexto: true },
+    { nombre: "Jonathan Swift", nacimiento: 1667, muerte: 1745, nacionalidad: "Irlanda", contexto: true },
+    { nombre: "Voltaire", nacimiento: 1694, muerte: 1778, nacionalidad: "Francia", contexto: true },
+    { nombre: "Jean-Jacques Rousseau", nacimiento: 1712, muerte: 1778, nacionalidad: "Ginebra / Francia", contexto: true },
+    { nombre: "Denis Diderot", nacimiento: 1713, muerte: 1784, nacionalidad: "Francia", contexto: true },
+    { nombre: "Johann Wolfgang von Goethe", nacimiento: 1749, muerte: 1832, nacionalidad: "Alemania", contexto: true },
+    { nombre: "Lord Byron", nacimiento: 1788, muerte: 1824, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Percy Bysshe Shelley", nacimiento: 1792, muerte: 1822, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Victor Hugo", nacimiento: 1802, muerte: 1885, nacionalidad: "Francia", contexto: true },
+    { nombre: "Charles Dickens", nacimiento: 1812, muerte: 1870, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Charles Baudelaire", nacimiento: 1821, muerte: 1867, nacionalidad: "Francia", contexto: true },
+    { nombre: "Gustave Flaubert", nacimiento: 1821, muerte: 1880, nacionalidad: "Francia", contexto: true },
+    { nombre: "Fiódor Dostoievski", nacimiento: 1821, muerte: 1881, nacionalidad: "Rusia", contexto: true },
+    { nombre: "León Tolstói", nacimiento: 1828, muerte: 1910, nacionalidad: "Rusia", contexto: true },
+    { nombre: "Émile Zola", nacimiento: 1840, muerte: 1902, nacionalidad: "Francia", contexto: true },
+    { nombre: "Stéphane Mallarmé", nacimiento: 1842, muerte: 1898, nacionalidad: "Francia", contexto: true },
+    { nombre: "Paul Verlaine", nacimiento: 1844, muerte: 1896, nacionalidad: "Francia", contexto: true },
+    { nombre: "Guy de Maupassant", nacimiento: 1850, muerte: 1893, nacionalidad: "Francia", contexto: true },
+    { nombre: "Rubén Darío", nacimiento: 1867, muerte: 1916, nacionalidad: "Nicaragua", contexto: true },
+    { nombre: "Marcel Proust", nacimiento: 1871, muerte: 1922, nacionalidad: "Francia", contexto: true },
+    { nombre: "James Joyce", nacimiento: 1882, muerte: 1941, nacionalidad: "Irlanda", contexto: true },
+    { nombre: "Franz Kafka", nacimiento: 1883, muerte: 1924, nacionalidad: "Bohemia", contexto: true },
+    { nombre: "Aldous Huxley", nacimiento: 1894, muerte: 1963, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Jorge Luis Borges", nacimiento: 1899, muerte: 1986, nacionalidad: "Argentina", contexto: true },
+    { nombre: "George Orwell", nacimiento: 1903, muerte: 1950, nacionalidad: "Inglaterra", contexto: true },
+    { nombre: "Albert Camus", nacimiento: 1913, muerte: 1960, nacionalidad: "Francia", contexto: true },
+    { nombre: "Julio Cortázar", nacimiento: 1914, muerte: 1984, nacionalidad: "Argentina", contexto: true },
+    { nombre: "Gabriel García Márquez", nacimiento: 1927, muerte: 2014, nacionalidad: "Colombia", contexto: true },
+    { nombre: "Haruki Murakami", nacimiento: 1949, muerte: null, nacionalidad: "Japón", contexto: true },
+    { nombre: "Roberto Bolaño", nacimiento: 1953, muerte: 2003, nacionalidad: "Chile", contexto: true },
+    { nombre: "Kazuo Ishiguro", nacimiento: 1954, muerte: null, nacionalidad: "Reino Unido", contexto: true },
+    { nombre: "Michel Houellebecq", nacimiento: 1956, muerte: null, nacionalidad: "Francia", contexto: true },
+  ];
+
+  // Épocas literarias, como partición sin solapes: cada una arranca donde termina
+  // la anterior. Las fronteras reales son difusas y los movimientos se pisan entre
+  // sí, pero para leerlas como bandas conviene que no se superpongan.
+  // "Fin de siglo" agrupa simbolismo, decadentismo y modernismo hispánico, y evita
+  // la ambigüedad de "modernismo", que en inglés nombra otra cosa y otra época.
+  const PERIODOS = [
+    {
+      nombre: "Baja Edad Media", desde: 1300, hasta: 1450, corto: "B. Edad Media",
+      texto: "Se escribe todavía dentro del orden medieval —la Iglesia, el feudo, la escolástica—, pero ya en lengua vulgar y no en latín. Es el momento en que el italiano, el inglés y el castellano se vuelven lenguas literarias, y con eso empieza a existir un lector que no es clérigo."
+    },
+    {
+      nombre: "Renacimiento", desde: 1450, hasta: 1600, corto: "Renacim.",
+      texto: "El humanismo recupera a los antiguos y pone al hombre en el centro. La imprenta multiplica los libros y crea por primera vez un público. La literatura deja de ser ejemplar y empieza a explorar el carácter, la duda y la ironía."
+    },
+    {
+      nombre: "Barroco", desde: 1600, hasta: 1700, corto: "Barroco",
+      texto: "Tras la Contrarreforma y las guerras de religión, el optimismo renacentista se agria. La forma se vuelve difícil a propósito —el retruécano, la agudeza, el claroscuro— y los temas son el desengaño, la fugacidad y la vida como sueño o teatro."
+    },
+    {
+      nombre: "Ilustración", desde: 1700, hasta: 1780, corto: "Ilustr.",
+      texto: "La razón como tribunal de todo, incluida la religión y la autoridad. Aparecen la enciclopedia, el ensayo y la sátira como armas críticas, y la prosa se vuelve clara y argumentativa. Es también cuando nace la novela moderna."
+    },
+    {
+      nombre: "Romanticismo", desde: 1780, hasta: 1850, corto: "Romant.",
+      texto: "Reacción contra esa razón: valen más la emoción, la imaginación y el yo. Interesan la noche, la ruina, lo sobrenatural y el paisaje como espejo del ánimo. Coincide con las revoluciones y con la invención del artista como figura solitaria y genial."
+    },
+    {
+      nombre: "Realismo y Naturalismo", desde: 1850, hasta: 1890, corto: "Realismo",
+      texto: "La novela se propone observar la sociedad burguesa e industrial como quien levanta un informe. El naturalismo lleva el programa más lejos: bajo la influencia de la ciencia, trata al personaje como resultado de su herencia y su ambiente."
+    },
+    {
+      nombre: "Fin de siglo", desde: 1890, hasta: 1914, corto: "Fin de siglo",
+      texto: "Simbolismo, decadentismo y el modernismo hispánico de Darío. Se abandona la ambición de retratar el mundo y se busca la sugerencia, la musicalidad y la belleza como valor en sí. Clima de refinamiento, artificio y crisis."
+    },
+    {
+      nombre: "Vanguardias", desde: 1914, hasta: 1945, corto: "Vanguardias",
+      texto: "Las dos guerras rompen la confianza en el progreso, y la literatura rompe con sus propias formas: monólogo interior, tiempo desarmado, narrador poco fiable. Se escribe sobre la conciencia más que sobre los hechos."
+    },
+    {
+      nombre: "Posguerra", desde: 1945, hasta: 1980, corto: "Posguerra",
+      texto: "Después de 1945 la pregunta es cómo seguir escribiendo. Existencialismo, distopía y literatura del absurdo en Europa; en América Latina, el boom convierte la periferia en centro. La ciencia ficción madura y se vuelve un modo de pensar el presente."
+    },
+    {
+      nombre: "Contemporánea", desde: 1980, hasta: 2026, corto: "Contemp.",
+      texto: "Posmodernidad, globalización y mezcla deliberada de lo culto y lo popular. Se disuelven las fronteras entre géneros y entre literaturas nacionales, y ganan peso las voces que antes quedaban fuera del canon."
+    },
   ];
 
   const YEAR_MIN = 1260;
   const YEAR_MAX = 2026;
-  const PX_PER_YEAR = 3;
-  const timelineWidth = (YEAR_MAX - YEAR_MIN) * PX_PER_YEAR;
 
-  function xForYear(year) {
-    return (year - YEAR_MIN) * PX_PER_YEAR;
-  }
+  // Niveles de píxeles por año. El zoom se mueve entre estos valores.
+  const ZOOM_LEVELS = [0.6, 0.9, 1.3, 2, 3, 4.5, 7];
+  let zoomIndex = ZOOM_LEVELS.indexOf(3);
 
+  const scroller = document.querySelector(".timeline-scroll");
   const timeline = document.getElementById("timeline");
-  timeline.style.width = timelineWidth + "px";
+  const btnOut = document.getElementById("zoom-out");
+  const btnIn = document.getElementById("zoom-in");
+  const btnFit = document.getElementById("zoom-fit");
+  const btnModernos = document.getElementById("zoom-modernos");
 
-  const axis = document.createElement("div");
-  axis.className = "axis";
-  axis.style.width = timelineWidth + "px";
+  const autoresOrdenados = autores.slice().sort((a, b) => a.nacimiento - b.nacimiento);
 
-  for (let y = Math.ceil(YEAR_MIN / 10) * 10; y <= YEAR_MAX; y += 10) {
-    const isCentury = y % 100 === 0;
-    const tick = document.createElement("div");
-    tick.className = "tick" + (isCentury ? " century" : "");
-    tick.style.left = xForYear(y) + "px";
-    axis.appendChild(tick);
-
-    if (isCentury || y % 50 === 0) {
-      const label = document.createElement("div");
-      label.className = "tick-label";
-      label.style.left = xForYear(y) + "px";
-      label.textContent = y;
-      axis.appendChild(label);
-    }
+  // Cada cuántos años poner una marca, según lo apretada que esté la escala.
+  function tickStep(pxPerYear) {
+    if (pxPerYear >= 3) return 10;
+    if (pxPerYear >= 1.3) return 25;
+    return 50;
   }
 
-  const todayLine = document.createElement("div");
-  todayLine.className = "today-line";
-  todayLine.style.left = xForYear(2026) + "px";
-  axis.appendChild(todayLine);
+  function render(pxPerYear) {
+    const xForYear = (year) => (year - YEAR_MIN) * pxPerYear;
+    const timelineWidth = (YEAR_MAX - YEAR_MIN) * pxPerYear;
 
-  const todayLabel = document.createElement("div");
-  todayLabel.className = "today-label";
-  todayLabel.style.left = xForYear(2026) + "px";
-  todayLabel.textContent = "Hoy";
-  axis.appendChild(todayLabel);
+    timeline.textContent = "";
+    timeline.style.width = timelineWidth + "px";
 
-  timeline.appendChild(axis);
+    const axis = document.createElement("div");
+    axis.className = "axis";
+    axis.style.width = timelineWidth + "px";
 
-  const rows = document.createElement("div");
-  rows.className = "rows";
-  rows.style.width = timelineWidth + "px";
+    const step = tickStep(pxPerYear);
+    for (let y = Math.ceil(YEAR_MIN / step) * step; y <= YEAR_MAX; y += step) {
+      const isCentury = y % 100 === 0;
+      const tick = document.createElement("div");
+      tick.className = "tick" + (isCentury ? " century" : "");
+      tick.style.left = xForYear(y) + "px";
+      axis.appendChild(tick);
 
-  autores
-    .slice()
-    .sort((a, b) => a.nacimiento - b.nacimiento)
-    .forEach((autor) => {
+      // Etiquetar cada 100 años cuando la escala está apretada, cada 50 cuando hay lugar.
+      const labelStep = pxPerYear >= 1.3 ? 50 : 100;
+      if (y % labelStep === 0) {
+        const label = document.createElement("div");
+        label.className = "tick-label";
+        label.style.left = xForYear(y) + "px";
+        label.textContent = y;
+        axis.appendChild(label);
+      }
+    }
+
+    const todayLine = document.createElement("div");
+    todayLine.className = "today-line";
+    todayLine.style.left = xForYear(2026) + "px";
+    axis.appendChild(todayLine);
+
+    const todayLabel = document.createElement("div");
+    todayLabel.className = "today-label";
+    todayLabel.style.left = xForYear(2026) + "px";
+    todayLabel.textContent = "Hoy";
+    axis.appendChild(todayLabel);
+
+    timeline.appendChild(axis);
+
+    const rows = document.createElement("div");
+    rows.className = "rows";
+    rows.style.width = timelineWidth + "px";
+
+    autoresOrdenados.forEach((autor) => {
       const muerte = autor.muerte ?? YEAR_MAX;
       const left = xForYear(autor.nacimiento);
       const width = Math.max(xForYear(muerte) - left, 6);
 
       const row = document.createElement("div");
-      row.className = "row";
+      row.className = "row" + (autor.contexto ? " contexto" : "");
 
       const edad = autor.muerte ? autor.muerte - autor.nacimiento : null;
 
       const bar = document.createElement("div");
-      bar.className = "lifebar";
+      bar.className = "lifebar" + (autor.contexto ? " contexto" : "");
       bar.style.left = left + "px";
       bar.style.width = width + "px";
       bar.title = edad !== null
@@ -485,7 +807,8 @@
       const metaTag = document.createElement("div");
       metaTag.className = "meta-tag";
       metaTag.style.left = left + "px";
-      metaTag.textContent = edad !== null ? `${autor.nacionalidad} · murió a los ${edad} años` : autor.nacionalidad;
+      const meta = edad !== null ? `${autor.nacionalidad} · murió a los ${edad} años` : autor.nacionalidad;
+      metaTag.textContent = autor.contexto ? `${meta} · contexto` : meta;
 
       row.appendChild(bar);
       row.appendChild(nameTag);
@@ -493,5 +816,127 @@
       rows.appendChild(row);
     });
 
-  timeline.appendChild(rows);
+    timeline.appendChild(rows);
+
+    const capa = document.createElement("div");
+    capa.className = "periodos";
+    capa.style.width = timelineWidth + "px";
+
+    PERIODOS.forEach((p) => {
+      const x = xForYear(p.desde);
+      const ancho = xForYear(p.hasta) - x;
+
+      const banda = document.createElement("div");
+      banda.className = "periodo-banda";
+      banda.style.left = x + "px";
+      banda.style.width = ancho + "px";
+
+      // El rótulo solo si hay lugar; si no, ensucia más de lo que aclara.
+      const texto = ancho > 90 ? p.nombre : (ancho > 46 ? p.corto : "");
+      if (texto) {
+        const rotulo = document.createElement("div");
+        rotulo.className = "periodo-nombre";
+        rotulo.style.maxWidth = ancho + "px";
+        rotulo.textContent = texto;
+        banda.appendChild(rotulo);
+      }
+
+      capa.appendChild(banda);
+    });
+
+    // Primera en el DOM para que quede debajo: eje y filas llevan z-index 1.
+    timeline.insertBefore(capa, timeline.firstChild);
+
+    btnOut.disabled = zoomIndex === 0;
+    btnIn.disabled = zoomIndex === ZOOM_LEVELS.length - 1;
+  }
+
+  // Cambia el zoom manteniendo centrado el mismo año que se estaba mirando.
+  function setZoom(nuevoIndice) {
+    const limitado = Math.min(Math.max(nuevoIndice, 0), ZOOM_LEVELS.length - 1);
+    const anterior = ZOOM_LEVELS[zoomIndex];
+    const anioCentro = YEAR_MIN + (scroller.scrollLeft + scroller.clientWidth / 2) / anterior;
+
+    zoomIndex = limitado;
+    render(ZOOM_LEVELS[zoomIndex]);
+    scrollAAnio(anioCentro);
+  }
+
+  function scrollAAnio(anio) {
+    const px = (anio - YEAR_MIN) * ZOOM_LEVELS[zoomIndex];
+    scroller.scrollLeft = px - scroller.clientWidth / 2;
+  }
+
+  // Mayor zoom con el que entra todo el rango sin scrollear.
+  function indiceQueEntra() {
+    const disponible = scroller.clientWidth;
+    const total = YEAR_MAX - YEAR_MIN;
+    for (let i = ZOOM_LEVELS.length - 1; i >= 0; i--) {
+      if (total * ZOOM_LEVELS[i] <= disponible) return i;
+    }
+    return 0;
+  }
+
+  const btnPeriodos = document.getElementById("toggle-periodos");
+  btnPeriodos.addEventListener("click", () => {
+    const ocultas = timeline.classList.toggle("sin-periodos");
+    btnPeriodos.textContent = ocultas ? "Mostrar épocas" : "Ocultar épocas";
+  });
+
+  const btnLeidos = document.getElementById("toggle-leidos");
+  btnLeidos.addEventListener("click", () => {
+    const filtrado = timeline.classList.toggle("solo-leidos");
+    btnLeidos.textContent = filtrado ? "Mostrar contexto" : "Ocultar contexto";
+  });
+
+  btnOut.addEventListener("click", () => setZoom(zoomIndex - 1));
+  btnIn.addEventListener("click", () => setZoom(zoomIndex + 1));
+
+  btnFit.addEventListener("click", () => {
+    zoomIndex = indiceQueEntra();
+    render(ZOOM_LEVELS[zoomIndex]);
+    scroller.scrollLeft = 0;
+  });
+
+  // Atajo al tramo donde está casi todo el mundo: de 1500 en adelante.
+  btnModernos.addEventListener("click", () => {
+    zoomIndex = ZOOM_LEVELS.indexOf(3);
+    render(ZOOM_LEVELS[zoomIndex]);
+    scroller.scrollLeft = (1500 - YEAR_MIN) * ZOOM_LEVELS[zoomIndex];
+  });
+
+  // Lista de épocas al pie, con los autores de la línea que caen en cada una.
+  // Se reparten por el año en que cada uno cumplió cuarenta: la edad en que casi
+  // todos habían publicado ya lo que los define.
+  (function listarEpocas() {
+    const dl = document.getElementById("epocas-lista");
+    PERIODOS.forEach((p) => {
+      const dentro = autoresOrdenados.filter((a) => {
+        const centro = a.nacimiento + 40;
+        return centro >= p.desde && centro < p.hasta;
+      });
+
+      const dt = document.createElement("dt");
+      dt.innerHTML = `${p.nombre} <span class="epoca-anios">${p.desde}–${p.hasta === 2026 ? "hoy" : p.hasta}</span>`;
+
+      const dd = document.createElement("dd");
+      dd.textContent = p.texto;
+
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+
+      if (dentro.length) {
+        const quienes = document.createElement("dd");
+        quienes.className = "epoca-autores";
+        quienes.innerHTML = dentro
+          .map((a) => `<span class="${a.contexto ? "es-contexto" : ""}">${a.nombre}</span>`)
+          .join(", ");
+        dl.appendChild(quienes);
+      }
+    });
+  })();
+
+  // Al abrir: escala cómoda, con la vista puesta donde está el grueso de los autores.
+  render(ZOOM_LEVELS[zoomIndex]);
+  scroller.scrollLeft = (1500 - YEAR_MIN) * ZOOM_LEVELS[zoomIndex];
 </script>
