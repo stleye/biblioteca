@@ -11,7 +11,7 @@ Todo el sitio son 4 páginas HTML autocontenidas (sin build step, sin dependenci
 | `libros.html` | Libros leídos, agrupados por autor, con sinopsis, personajes y portada | /libros.html |
 | `autores.html` | Línea de tiempo visual de cuándo vivió cada autor | /autores.html |
 
-`index.html` es la página que GitHub Pages sirve en la raíz (tiene prioridad sobre `README.md`). Si se agrega o saca un libro/autor/cantidad de palabras, actualizar a mano los `<span class="room-stat">` de `index.html` (no se calculan dinámicamente, están hardcodeados a propósito para que la portada cargue instantánea sin parsear los otros archivos).
+`index.html` es la página que GitHub Pages sirve en la raíz (tiene prioridad sobre `README.md`). La tarjeta de vocabulario **no lleva contador**: se sacó a pedido del usuario (agosto 2026) porque había que actualizarlo a mano en cada palabra nueva y no valía la molestia. Las de libros y autores sí conservan su `<span class="room-stat">`, hardcodeado a propósito para que la portada cargue sin parsear los otros archivos; si se agrega o saca un libro o un autor, actualizarlo a mano. No volver a agregar el de palabras.
 
 No hay `vocabulario.md` — se eliminó y se migró todo a HTML (agosto 2026).
 
