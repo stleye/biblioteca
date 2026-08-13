@@ -41,6 +41,7 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *El mundo en juego* — Christopher Stork
 - *El gran dios Pan* — Arthur Machen
 - *La máscara de la muerte roja* — Edgar Allan Poe
+- *El hombre que calculaba* — Malba Tahan
 
 ## Por leer
 
