@@ -40,3 +40,7 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *El gato negro* — Edgar Allan Poe
 - *El mundo en juego* — Christopher Stork
 - *El gran dios Pan* — Arthur Machen
+
+## Por leer
+
+- *Los sauces* — Algernon Blackwood
