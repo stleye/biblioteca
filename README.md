@@ -45,5 +45,6 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *La cosa en el tejado* — Robert E. Howard
 - *Los sauces* — Algernon Blackwood
 - *La nave blanca* — H. P. Lovecraft
+- *En la cripta* — H. P. Lovecraft
 
 ## Por leer
