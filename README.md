@@ -43,7 +43,7 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *La máscara de la muerte roja* — Edgar Allan Poe
 - *El hombre que calculaba* — Malba Tahan
 - *La cosa en el tejado* — Robert E. Howard
+- *Los sauces* — Algernon Blackwood
+- *La nave blanca* — H. P. Lovecraft
 
 ## Por leer
-
-- *Los sauces* — Algernon Blackwood
