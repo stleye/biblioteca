@@ -46,5 +46,6 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *Los sauces* — Algernon Blackwood
 - *La nave blanca* — H. P. Lovecraft
 - *En la cripta* — H. P. Lovecraft
+- *El Aleph* — Jorge Luis Borges
 
 ## Por leer
