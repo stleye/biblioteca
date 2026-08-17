@@ -47,5 +47,6 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *La nave blanca* — H. P. Lovecraft
 - *En la cripta* — H. P. Lovecraft
 - *El Aleph* — Jorge Luis Borges
+- *La metamorfosis* — Franz Kafka
 
 ## Por leer
