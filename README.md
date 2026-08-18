@@ -48,5 +48,6 @@ También hay un [registro de libros leídos](libros.html) y una [línea de tiemp
 - *En la cripta* — H. P. Lovecraft
 - *El Aleph* — Jorge Luis Borges
 - *La metamorfosis* — Franz Kafka
+- *El árbol de la colina* — H. P. Lovecraft y Duane W. Rimel
 
 ## Por leer
